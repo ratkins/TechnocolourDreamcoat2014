@@ -1,10 +1,12 @@
 #ifndef EffectGroup_h
 #define EffectGroup_h
 
+#include "Effect.cpp"
+
 class EffectGroup {
   
   public:
-        virtual Effect* draw(uint8_t micVal) = 0;
+        virtual Effect* effects() = 0;
         
 };
 

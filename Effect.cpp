@@ -3,24 +3,36 @@
 
 #include "FastLED.h"
 
-#define FUCK
+#define WIDTH 16
+#define HEIGHT 8
+#define NUM_LEDS (WIDTH * HEIGHT)
 
 class Effect {
   
   protected:
     CRGB *leds;
-    uint16_t width, height;
     
   public:
-    Effect(CRGB *leds, uint16_t width, uint16_t height) : leds(leds), width(width), height(height) {}
+    Effect(CRGB *leds) : leds(leds) {}
     
     virtual void draw(uint8_t micVal) = 0;
     
+    inXRange(uint16_t x) {
+      return x < WIDTH;
+    }
+    
+    inYRange(uint16_t y) {
+      return y < HEIGHT;
+    }
+    
     struct CRGB& pixel(uint16_t x, uint16_t y) {
-      if (x & 0x01) {
-        return leds[(x * width) + x - y - 1];
+      if (y & 0x01) {
+        // odd y
+        return leds[(y * WIDTH) + WIDTH - x - 1];
       } else {
-        return leds[(x * width) + y];
+        // even y
+        return leds[(y * WIDTH) + x];        
+
       }
     }
     

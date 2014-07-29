@@ -5,7 +5,9 @@
 
 #include "Effect.cpp"
 #include "EffectGroup.cpp"
+#include "TestEffect.cpp"
 #include "AdvancingPaletteEffect.cpp"
+#include "FireEffect.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -14,9 +16,6 @@
 #define ENCODER_BUTTON_PIN 2
 
 #define DATA_PIN 3
-#define WIDTH 16
-#define HEIGHT 8
-#define NUM_LEDS WIDTH * HEIGHT
 
 #define FRAMES_PER_SECOND 60
 
@@ -24,25 +23,46 @@ CRGB leds[NUM_LEDS];
 
 Encoder encoder(ENCODER_PIN0, ENCODER_PIN1);
 
-AdvancingPaletteEffect advancingPalette(leds, WIDTH, HEIGHT, HeatColors_p); 
+TestEffect test(leds);
+AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
+AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
+AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
+
+FireEffect fire00(leds, 0, HeatColors_p);
+FireEffect fire01(leds, 1, HeatColors_p);
+FireEffect fire02(leds, 2, HeatColors_p);
+FireEffect fire03(leds, 3, HeatColors_p);
+FireEffect fire04(leds, 4, HeatColors_p);
+FireEffect fire05(leds, 5, HeatColors_p);
+FireEffect fire06(leds, 6, HeatColors_p);
+FireEffect fire07(leds, 7, HeatColors_p);
+FireEffect fire08(leds, 8, HeatColors_p);
+FireEffect fire09(leds, 9, HeatColors_p);
+FireEffect fire10(leds, 10, HeatColors_p);
+FireEffect fire11(leds, 11, HeatColors_p);
+FireEffect fire12(leds, 12, HeatColors_p);
+FireEffect fire13(leds, 13, HeatColors_p);
+FireEffect fire14(leds, 14, HeatColors_p);
+FireEffect fire15(leds, 15, HeatColors_p);
 
 Effect* effects0[] = {
-  &advancingPalette, &advancingPalette, &advancingPalette, NULL
+  &test, NULL
 };
 
 Effect* effects1[] = {
-  &advancingPalette, &advancingPalette, &advancingPalette, NULL
+  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
+  &fire08, &fire09, &fire10, &fire11, &fire12, &fire13, &fire14, &fire15, NULL  
 };
 
 Effect* effects2[] = {
-  &advancingPalette, &advancingPalette, &advancingPalette, NULL
+  &advancingPalette2, &advancingPalette2, &advancingPalette2, NULL
 };
 
 Effect** effectGroups[] = {
   effects0, effects1, effects2
 };
 
-Effect **effects = effectGroups[0];
+Effect **effects = effectGroups[1];
 
 uint8_t effectGroupCount = 3;
 uint8_t effectGroupIndex = 0;
@@ -54,7 +74,7 @@ uint8_t effectIndex;
 
 void setup() {
   Serial.begin(57600);
-  FastLED.addLeds<WS2812B, DATA_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
   
   pinMode(ENCODER_BUTTON_PIN, INPUT_PULLUP);
 }

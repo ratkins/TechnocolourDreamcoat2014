@@ -86,7 +86,8 @@ Effect **effects = effectGroup[0];
 uint8_t effectGroupCount = 3;
 uint8_t effectGroupIndex = 0;
 
-uint8_t encoderDebounce = 0;
+long encoderVal;
+uint8_t encoderDebounce;
 
 int micVal;
 int potVal;
@@ -102,13 +103,22 @@ void setup() {
 }
 
 void loop() {
-  long encoderVal = encoder.read();
-  if (encoderVal != 0) {
-    Serial.print("encoderVal = "); Serial.println(encoderVal);
+//  Serial.print("Top of loop(), encoderDebounce = "); Serial.println(encoderDebounce);        
+  encoderVal = encoder.read();
+  if (encoderDebounce > 0) {
+      encoder.write(0);
+      encoderDebounce--;
+//      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
+  }
+  if (encoderDebounce == 0 && encoderVal != 0) {
+//    Serial.print("encoderVal = "); Serial.println(encoderVal);
     effectGroupIndex += encoderVal;
-    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);     
+//    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);     
     effects = effectGroup[effectGroupIndex % effectGroupCount];
     encoder.write(0);
+//    Serial.print("just about to increment encoderDebounce...");
+    encoderDebounce = 8;
+//    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
   }
 
   potVal = analogRead(MIC_PIN);
@@ -120,7 +130,7 @@ void loop() {
   }
   LEDS.show();
   LEDS.delay(1000 / FRAMES_PER_SECOND);
-  memset8(leds, 0, WIDTH * HEIGHT * sizeof(CRGB));
+  memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
 
 

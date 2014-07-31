@@ -13,21 +13,22 @@ class LayoutTest : public Effect {
     LayoutTest(CRGB *leds) : Effect(leds), frame(0) {}
     
     virtual void draw(uint8_t micVal) {
-      leds[1] = CRGB::Red;
-      leds[2] = CRGB::Green;
-      leds[3] = CRGB::Blue;
-      
-      // origin
-      pixel(0, 0) = CRGB::White;
-      
-      // bottom left
-      pixel(WIDTH - 1, 0) = CRGB::Red;
-      
-      // top left
-      pixel(WIDTH - 1, HEIGHT - 1) = CRGB::Green;
-      
-      // top right
-      pixel(0, HEIGHT - 1) = CRGB::Blue;
+        uint8_t hue = 0;
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                pixel(x, y) = CHSV(hue, 255, 255);
+            }
+            hue += 32;
+        }
+//        for (int y = 0; y < maxY(WIDTH - 1); y++) {
+//            pixel(WIDTH - 1, y) = CRGB::Red;
+//        }
+//        for (int x = WIDTH - 1; x >= 0; x--) {
+//            pixel(x, maxY(x)) = CRGB::Green;
+//        }
+//        for (int y = maxY(0); y >=0; y--) {
+//            pixel(0, y) = CRGB::Blue;
+//        }
     }
 
 };

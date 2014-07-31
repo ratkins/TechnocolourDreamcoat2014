@@ -28,22 +28,28 @@ class Effect {
       return x >= 0 && y >= 0 && x < WIDTH && y < columnHeights[x];
     }
     
-    struct CRGB& maxY(int16_t x) {
+    int16_t maxY(int16_t x) {
         return columnHeights[x];
     }
     
     struct CRGB& pixel(int16_t x, int16_t y) {
+
         if (visible(x, y)) {
-            uint8_t sum = 0;
+//            Serial.print("pixel("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.println(") - visible");
+            uint16_t sum = 0;
             for (int i = 0; i < x; i++) {
-                sum += columnHeights[i];
+              sum += columnHeights[i];
             }
+
             if (x & 0x01) {
+//                Serial.print("odds, returning leds index "); Serial.println(sum + columnHeights[x] - y - 1);
                 return leds[sum + columnHeights[x] - y - 1];
             } else {
+//                Serial.print("even, returning leds index "); Serial.println(sum + y);              
                 return leds[sum + y];
             }
         } else {
+//            Serial.print("pixel("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.println(") - deadPixel");
             return deadPixel;
         } 
     }

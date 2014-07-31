@@ -30,9 +30,9 @@ Encoder encoder(ENCODER_PIN0, ENCODER_PIN1);
 LayoutTest layoutTest(leds);
 ChaseTest chaseTest(leds);
 
-PlainColour plainColourPurple(leds, CRGB::Purple);
-PlainColour plainColourYellow(leds, CRGB::Yellow);
-PlainColour plainColourOrange(leds, CRGB::Orange);
+PlainColour plainColourRed(leds, CRGB::Red);
+PlainColour plainColourGreen(leds, CRGB::Green);
+PlainColour plainColourBlue(leds, CRGB::Blue);
 PlainColour plainColourWhite(leds, CRGB::White);
 
 AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
@@ -59,29 +59,29 @@ FireEffect fire15(leds, 15, HeatColors_p);
 LifeEffect life(leds, 200);
 
 Effect* effects0[] = {
-//  &layoutTest, NULL,
+//  &layoutTest, NULL
 //  &chaseTest, NULL
-  &plainColourWhite, NULL
-//  &plainColourPurple, NULL
+//  &plainColourWhite, NULL
+  &plainColourRed, NULL
 //  &life, NULL
 };
 
 Effect* effects1[] = {
 //  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
 //  &fire08, &fire09, &fire10, &fire11, &fire12, &fire13, &fire14, &fire15, NULL  
-  &plainColourYellow, NULL
+  &plainColourGreen, NULL
 };
 
 Effect* effects2[] = {
 //  &life, NULL
-  &plainColourPurple, NULL
+  &plainColourBlue, NULL
 };
 
-Effect** effectGroups[] = {
+Effect** effectGroup[] = {
   effects0, effects1, effects2
 };
 
-Effect **effects = effectGroups[1];
+Effect **effects = effectGroup[0];
 
 uint8_t effectGroupCount = 3;
 uint8_t effectGroupIndex = 0;
@@ -91,7 +91,7 @@ uint8_t encoderDebounce = 0;
 int micVal;
 int potVal;
 
-uint8_t effectIndex;
+uint8_t effectIndex = 0;
 
 void setup() {
   Serial.begin(57600);
@@ -102,14 +102,12 @@ void setup() {
 }
 
 void loop() {
-  effects = effectGroups[effectGroupIndex];
-  
   long encoderVal = encoder.read();
   if (encoderVal != 0) {
     Serial.print("encoderVal = "); Serial.println(encoderVal);
     effectGroupIndex += encoderVal;
     Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);     
-    effects = effectGroups[effectGroupIndex % effectGroupCount];
+    effects = effectGroup[effectGroupIndex % effectGroupCount];
     encoder.write(0);
   }
 

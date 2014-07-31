@@ -68,7 +68,7 @@ public:
     }
     
     bool alive(int x, int y) {
-        return inXRange(x) && inYRange(y) && pixel(x, y);
+        return visible(x, y) && pixel(x, y);
     }
     
     // xxxx xxxx xxxx xxxx  xxxx xxxx xxxx xxxx

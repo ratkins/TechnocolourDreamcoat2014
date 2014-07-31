@@ -1,16 +1,16 @@
-#ifndef TestEffect_h
-#define TestEffect_h
+#ifndef LayoutTest_h
+#define LayoutTest_h
 
 #include "FastLED.h"
 #include "Effect.cpp"
 
-class TestEffect : public Effect {
+class LayoutTest : public Effect {
   
   private:
     int frame;
   
   public:
-    TestEffect(CRGB *leds) : Effect(leds), frame(0) {}
+    LayoutTest(CRGB *leds) : Effect(leds), frame(0) {}
     
     virtual void draw(uint8_t micVal) {
       leds[1] = CRGB::Red;

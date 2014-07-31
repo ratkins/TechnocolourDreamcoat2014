@@ -3,9 +3,9 @@
 
 #import "Effect.cpp"
 
-#define DELTA_LEN ((WIDTH * HEIGHT / 16) + 1)
+#define DELTA_LEN (WIDTH * HEIGHT / 16) // This is probably going to bite me for non-even NUM_LEDS / 16, need a +1 here?
 
-class Life : public Effect {
+class LifeEffect : public Effect {
     
 private:
     
@@ -15,9 +15,8 @@ private:
     
 public:
     
-    Life(CRGB *leds, int density): Effect(leds), density(density) {}
-    
-    void seed(uint8_t hue) {
+    LifeEffect(CRGB *leds, int density): Effect(leds), density(density) {
+        uint8_t hue = random(255);
         for (int i = 0; i < NUM_LEDS; i++) {
             if (random(255) < density) {
                 leds[i] = CHSV(hue, 255, 255);
@@ -25,13 +24,14 @@ public:
         }
     }
     
-    void start() {
-      uint8_t hue = random(256);
-      seed(hue);
-      for (int x = 0; x < WIDTH; x++) {
-          for (int y = 0; y < HEIGHT; y++) {
-            int neighbours = numNeighbours(x, y);
-                if (pixel(x, y)) {
+    void draw(uint8_t micVal) {
+        delay(100);
+        Serial.print("draw, with DELTA_LEN = "); Serial.println(DELTA_LEN);
+      
+        for (int x = 0; x < WIDTH; x++) {
+             for (int y = 0; y < HEIGHT; y++) {
+                 int neighbours = numNeighbours(x, y);
+                 if (pixel(x, y)) {
                     if (neighbours < 2 || neighbours > 3) {
                         setChanged(x, y);
                     }
@@ -44,7 +44,7 @@ public:
         }
         updateWithChanges(hue++);
         for (int i = 0; i < DELTA_LEN; i++) {
-          delta[i] = 0;
+            delta[i] = 0;
         }
     }
     
@@ -79,8 +79,8 @@ public:
     }
     
     void updateWithChanges(uint8_t time) {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
                 if (delta[deltaIndex(x, y)] & (1 << (x < 16 ? x : x - 16))) {
                     if (pixel(x, y)) {
                         pixel(x, y) = CRGB::Black;
@@ -92,22 +92,16 @@ public:
         }
         // add some random pixels so we don't decay completely
         for (int i = 0; i < random(5); i++) {  
-            leds[random(width * height)] = CHSV(time, 255, 255);
+            leds[random(WIDTH * HEIGHT)] = CHSV(time, 255, 255);
         }
     }
     
     int deltaIndex(int x, int y) {
-        return y * 2 + (x < 16 ? 0 : 1);
+        return y + (x < 16 ? 0 : 1);
     }
     
-    void fadeout() {
-        for (int brightness = 0; brightness < 256; brightness++) {
-            for (int i = 0; i < width * height; i++) {
-                leds[i]--;
-            }
-            LEDS.show();
-        }
-    }
+//        Serial.println("draw()");
+//         Serial.print("deltaIndex("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.print(") = "); Serial.println(deltaIndex);
 
 };
 

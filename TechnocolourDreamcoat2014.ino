@@ -21,7 +21,7 @@
 
 #define DATA_PIN 3
 
-#define FRAMES_PER_SECOND 30
+#define FRAMES_PER_SECOND 60
 
 CRGB leds[NUM_LEDS];
 

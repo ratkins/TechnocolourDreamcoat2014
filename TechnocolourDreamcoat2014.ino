@@ -103,6 +103,7 @@ void setup() {
 }
 
 void loop() {
+  unsigned long loopStartTime = time();
 //  Serial.print("Top of loop(), encoderDebounce = "); Serial.println(encoderDebounce);        
   encoderVal = encoder.read();
   if (encoderDebounce > 0) {
@@ -129,7 +130,7 @@ void loop() {
     effects[effectIndex++]->draw(micVal);
   }
   LEDS.show();
-  LEDS.delay(1000 / FRAMES_PER_SECOND);
+  LEDS.delay(1000 / FRAMES_PER_SECOND - (time() - loopStartTime));
   memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
 

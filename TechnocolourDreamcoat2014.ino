@@ -21,7 +21,7 @@
 
 #define DATA_PIN 3
 
-#define FRAMES_PER_SECOND 60
+#define FRAMES_PER_SECOND 30
 
 CRGB leds[NUM_LEDS];
 
@@ -62,19 +62,19 @@ Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
-  &plainColourRed, NULL
+  &plainColourGreen, NULL
 //  &life, NULL
 };
 
 Effect* effects1[] = {
 //  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
 //  &fire08, &fire09, &fire10, &fire11, &fire12, &fire13, &fire14, &fire15, NULL  
-  &plainColourGreen, NULL
+  &plainColourBlue, NULL
 };
 
 Effect* effects2[] = {
 //  &life, NULL
-  &plainColourBlue, NULL
+  &plainColourRed, NULL
 };
 
 Effect** effectGroup[] = {
@@ -99,27 +99,29 @@ void setup() {
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(128);
   
+  delay(2000);
+  
   pinMode(ENCODER_BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-  unsigned long loopStartTime = time();
-//  Serial.print("Top of loop(), encoderDebounce = "); Serial.println(encoderDebounce);        
+  unsigned long loopStartMillis = millis();
+  Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);        
   encoderVal = encoder.read();
   if (encoderDebounce > 0) {
       encoder.write(0);
       encoderDebounce--;
-//      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
+      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
   }
   if (encoderDebounce == 0 && encoderVal != 0) {
-//    Serial.print("encoderVal = "); Serial.println(encoderVal);
+    Serial.print("encoderVal = "); Serial.println(encoderVal);
     effectGroupIndex += encoderVal;
-//    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);     
+    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
     effects = effectGroup[effectGroupIndex % effectGroupCount];
     encoder.write(0);
-//    Serial.print("just about to increment encoderDebounce...");
+    Serial.print("just about to increment encoderDebounce...");
     encoderDebounce = 8;
-//    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
+    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
   }
 
   potVal = analogRead(MIC_PIN);
@@ -130,7 +132,11 @@ void loop() {
     effects[effectIndex++]->draw(micVal);
   }
   LEDS.show();
-  LEDS.delay(1000 / FRAMES_PER_SECOND - (time() - loopStartTime));
+  
+  unsigned long loopStartDelta = millis() - loopStartMillis;
+  if (loopStartDelta < 1000 / FRAMES_PER_SECOND) {
+    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
+  }  
   memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
 

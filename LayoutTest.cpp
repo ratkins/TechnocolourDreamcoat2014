@@ -20,15 +20,6 @@ class LayoutTest : public Effect {
             }
             hue += 32;
         }
-//        for (int y = 0; y < maxY(WIDTH - 1); y++) {
-//            pixel(WIDTH - 1, y) = CRGB::Red;
-//        }
-//        for (int x = WIDTH - 1; x >= 0; x--) {
-//            pixel(x, maxY(x)) = CRGB::Green;
-//        }
-//        for (int y = maxY(0); y >=0; y--) {
-//            pixel(0, y) = CRGB::Blue;
-//        }
     }
 
 };

@@ -3,7 +3,7 @@
 
 #import "Effect.cpp"
 
-#define DELTA_LEN (WIDTH * HEIGHT / 16) // This is probably going to bite me for non-even NUM_LEDS / 16, need a +1 here?
+#define DELTA_LEN (((WIDTH / 8) + 1) * HEIGHT)
 
 class LifeEffect : public Effect {
     
@@ -11,7 +11,7 @@ private:
     
     uint8_t density;
     uint8_t hue;
-    uint16_t delta[DELTA_LEN];
+    uint8_t delta[DELTA_LEN];
     
 public:
     

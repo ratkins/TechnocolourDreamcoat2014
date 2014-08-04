@@ -8,9 +8,10 @@ class Plasma : public Effect {
   
   private:
     uint16_t frame;
+    CRGBPalette16 palette;
   
   public:
-    Plasma(CRGB *leds) : Effect(leds), frame(0) {}
+    Plasma(CRGB *leds, CRGBPalette16 palette) : Effect(leds), palette(palette), frame(0) {}
     
     virtual void draw(uint8_t micVal) {
         frame += 100;
@@ -22,7 +23,7 @@ class Plasma : public Effect {
                 v += cos16(y * (128 - wibble) * 4 + frame);
                 v += sin16(y * x * cos8(-frame) / 2);
                 
-                pixel(x, y) = CHSV((v >> 8) + 127, 255, 255);
+                pixel(x, y) = ColorFromPalette(palette, (v >> 8) + 127);
             }
         }      
     }

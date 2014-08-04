@@ -59,26 +59,29 @@ FireEffect fire15(leds, 15, HeatColors_p);
 
 LifeEffect life(leds, 200);
 
-Plasma plasma(leds);
+Plasma plasma0(leds, RainbowColors_p);
+Plasma plasma1(leds, RainbowStripeColors_p);
+Plasma plasma2(leds, PartyColors_p);
+Plasma plasma3(leds, OceanColors_p);
 
 Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
-  &plainColourGreen, NULL
+  &plasma1, NULL
 //  &life, NULL
 };
 
 Effect* effects1[] = {
 //  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
 //  &fire08, &fire09, &fire10, &fire11, &fire12, &fire13, &fire14, &fire15, NULL  
-  &plainColourBlue, NULL
+  &plasma2, NULL
 };
 
 Effect* effects2[] = {
 //  &life, NULL
 //  &plainColourRed, NULL
-  &plasma, NULL
+  &plasma3, NULL
 };
 
 Effect** effectGroup[] = {

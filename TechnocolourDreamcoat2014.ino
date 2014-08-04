@@ -12,6 +12,7 @@
 #include "AdvancingPaletteEffect.cpp"
 #include "FireEffect.cpp"
 #include "LifeEffect.cpp"
+#include "Plasma.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -58,6 +59,8 @@ FireEffect fire15(leds, 15, HeatColors_p);
 
 LifeEffect life(leds, 200);
 
+Plasma plasma(leds);
+
 Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
@@ -74,7 +77,8 @@ Effect* effects1[] = {
 
 Effect* effects2[] = {
 //  &life, NULL
-  &plainColourRed, NULL
+//  &plainColourRed, NULL
+  &plasma, NULL
 };
 
 Effect** effectGroup[] = {
@@ -106,22 +110,22 @@ void setup() {
 
 void loop() {
   unsigned long loopStartMillis = millis();
-  Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);        
+//  Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);        
   encoderVal = encoder.read();
   if (encoderDebounce > 0) {
       encoder.write(0);
       encoderDebounce--;
-      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
+//      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
   }
   if (encoderDebounce == 0 && encoderVal != 0) {
-    Serial.print("encoderVal = "); Serial.println(encoderVal);
+//    Serial.print("encoderVal = "); Serial.println(encoderVal);
     effectGroupIndex += encoderVal;
-    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
+//    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
     effects = effectGroup[effectGroupIndex % effectGroupCount];
     encoder.write(0);
-    Serial.print("just about to increment encoderDebounce...");
+//    Serial.print("just about to increment encoderDebounce...");
     encoderDebounce = 8;
-    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
+//    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
   }
 
   potVal = analogRead(MIC_PIN);

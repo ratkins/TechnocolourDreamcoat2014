@@ -42,21 +42,41 @@ AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p);
 AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
 
 FireEffect fire00(leds, 0, HeatColors_p);
-FireEffect fire01(leds, 1, HeatColors_p);
-FireEffect fire02(leds, 2, HeatColors_p);
-FireEffect fire03(leds, 3, HeatColors_p);
-FireEffect fire04(leds, 4, HeatColors_p);
-FireEffect fire05(leds, 5, HeatColors_p);
-FireEffect fire06(leds, 6, HeatColors_p);
-FireEffect fire07(leds, 7, HeatColors_p);
-FireEffect fire08(leds, 8, HeatColors_p);
-FireEffect fire09(leds, 9, HeatColors_p);
-FireEffect fire10(leds, 10, HeatColors_p);
-FireEffect fire11(leds, 11, HeatColors_p);
-FireEffect fire12(leds, 12, HeatColors_p);
-FireEffect fire13(leds, 13, HeatColors_p);
-FireEffect fire14(leds, 14, HeatColors_p);
-FireEffect fire15(leds, 15, HeatColors_p);
+//FireEffect fire01(leds, 1, HeatColors_p);
+//FireEffect fire02(leds, 2, HeatColors_p);
+//FireEffect fire03(leds, 3, HeatColors_p);
+//FireEffect fire04(leds, 4, HeatColors_p);
+//FireEffect fire05(leds, 5, HeatColors_p);
+//FireEffect fire06(leds, 6, HeatColors_p);
+//FireEffect fire07(leds, 7, HeatColors_p);
+//FireEffect fire08(leds, 8, HeatColors_p);
+//FireEffect fire09(leds, 9, HeatColors_p);
+//FireEffect fire10(leds, 10, HeatColors_p);
+//FireEffect fire11(leds, 11, HeatColors_p);
+//FireEffect fire12(leds, 12, HeatColors_p);
+//FireEffect fire13(leds, 13, HeatColors_p);
+//FireEffect fire14(leds, 14, HeatColors_p);
+//FireEffect fire15(leds, 15, HeatColors_p);
+//FireEffect fire16(leds, 16, HeatColors_p);
+//FireEffect fire17(leds, 17, HeatColors_p);
+//FireEffect fire18(leds, 18, HeatColors_p);
+//FireEffect fire19(leds, 19, HeatColors_p);
+//FireEffect fire20(leds, 20, HeatColors_p);
+//FireEffect fire21(leds, 21, HeatColors_p);
+//FireEffect fire22(leds, 22, HeatColors_p);
+//FireEffect fire23(leds, 23, HeatColors_p);
+//FireEffect fire24(leds, 24, HeatColors_p);
+//FireEffect fire25(leds, 25, HeatColors_p);
+//FireEffect fire26(leds, 26, HeatColors_p);
+//FireEffect fire27(leds, 27, HeatColors_p);
+//FireEffect fire28(leds, 28, HeatColors_p);
+//FireEffect fire29(leds, 29, HeatColors_p);
+//FireEffect fire30(leds, 30, HeatColors_p);
+//FireEffect fire31(leds, 31, HeatColors_p);
+//FireEffect fire32(leds, 32, HeatColors_p);
+//FireEffect fire33(leds, 33, HeatColors_p);
+//FireEffect fire34(leds, 34, HeatColors_p);
+//FireEffect fire35(leds, 35, HeatColors_p);
 
 LifeEffect life(leds, 200);
 
@@ -74,9 +94,12 @@ Effect* effects0[] = {
 };
 
 Effect* effects1[] = {
+  &fire00, NULL
 //  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
-//  &fire08, &fire09, &fire10, &fire11, &fire12, &fire13, &fire14, &fire15, NULL  
-  &plasma1, NULL
+//  &fire08, &fire09, &fire10, &fire11, &fire12, &fire13, &fire14, &fire15,
+//  &fire16, &fire17, &fire18, &fire19, &fire20, &fire21, &fire22, &fire23,
+//  &fire24, &fire25, &fire26, &fire27, &fire28, &fire29, &fire30, &fire31,
+//  &fire32, &fire33, &fire34, &fire35, NULL  
 };
 
 Effect* effects2[] = {

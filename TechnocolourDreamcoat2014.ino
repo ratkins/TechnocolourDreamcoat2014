@@ -15,6 +15,7 @@
 #include "Plasma.cpp"
 #include "Scintillate.cpp"
 #include "Perlin.cpp"
+#include "Snake.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -88,13 +89,16 @@ Scintillate scintillate(leds);
 
 Perlin perlin(leds);
 
+Snake snake(leds);
+
 Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
 //  &plasma0, NULL
 //  &life, NULL
-  &perlin, NULL
+//  &perlin, NULL
+  &snake, NULL
 };
 
 Effect* effects1[] = {

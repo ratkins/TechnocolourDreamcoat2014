@@ -4,7 +4,7 @@
 #include "FastLED.h"
 #include "Effect.cpp"
 
-#define COOLING 40
+#define COOLING 70
 #define SPARKING 120
 
 class FireEffect : public Effect {
@@ -32,7 +32,7 @@ class FireEffect : public Effect {
       }
       
       // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-     if (random8() < SPARKING ) {
+     if (random8() < micVal) {
        int y = random8(7);
        heat[y] = qadd8(heat[y], random8(160, 255));
      }
@@ -43,6 +43,8 @@ class FireEffect : public Effect {
       // for best results with color palettes.
        byte colorindex = scale8(heat[j], 240);
        pixel(column, j) = ColorFromPalette(palette, colorindex);
+       pixel(column + 12, j) = ColorFromPalette(palette, colorindex);       
+       pixel(column + 24, j) = ColorFromPalette(palette, colorindex);              
      }
    }
 

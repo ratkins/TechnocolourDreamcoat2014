@@ -26,6 +26,7 @@ class Perlin : public Effect {
     }
     
     virtual void draw(int rawPot, int rawMic, bool button) {
+        scale = normalisedPotVal(rawPot);
         fillnoise8();
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {

@@ -14,16 +14,24 @@ private:
 
     uint8_t (*currState)[WIDTH][HEIGHT];
     uint8_t (*nextState)[WIDTH][HEIGHT];
+    
+    uint8_t frame;
 
 public:
 
-    Life(CRGB *leds) : Effect(leds), hue(0) {
+    Life(CRGB *leds) : Effect(leds), hue(0), frame(0) {
         currState = &array1;
         nextState = &array2;
         seed(96);
     }
 
     void draw(int rawPot, int rawMic, bool button) {
+        // Skip every second frame otherwise we go too fast
+        if (frame++ & 0x01) {
+            copyToLedsArray(currState);
+            return;
+        }
+        
         if (normalisedMicVal(rawMic, rawPot) > 128) {      
             seed(96);
         }
@@ -67,14 +75,7 @@ public:
         
 
         // Copy nextState into leds array
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                uint8_t hugh = (*nextState)[x][y];
-                if (hugh > 0) {
-                    pixel(x, y) = CHSV(hugh, 255, 255);
-                }
-            }
-        }
+        copyToLedsArray(nextState);
 
         // make nextState our new currentState, ready for the next generation
         uint8_t (*tempState)[WIDTH][HEIGHT] = currState;
@@ -175,11 +176,22 @@ public:
     void seed(uint8_t chance) {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
-                if (random(256) < chance) {
+                if (random8() < chance) {
                     (*currState)[x][y] = CRGB(1, 255, 255);
                 }
             }
         }
+    }
+    
+    void copyToLedsArray(uint8_t (*state)[WIDTH][HEIGHT]) {
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                uint8_t hugh = (*state)[x][y];
+                if (hugh > 0) {
+                    pixel(x, y) = CHSV(hugh, 255, 255);
+                }
+            }
+        }      
     }
     
 };

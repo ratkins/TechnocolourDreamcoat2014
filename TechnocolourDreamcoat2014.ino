@@ -11,7 +11,7 @@
 #include "PlainColour.cpp"
 #include "AdvancingPaletteEffect.cpp"
 #include "FireEffect.cpp"
-#include "LifeEffect.cpp"
+#include "Life.cpp"
 #include "Plasma.cpp"
 #include "Scintillate.cpp"
 #include "Perlin.cpp"
@@ -80,7 +80,7 @@ FireEffect fire11(leds, 11, HeatColors_p);
 //FireEffect fire34(leds, 34, HeatColors_p);
 //FireEffect fire35(leds, 35, HeatColors_p);
 
-LifeEffect life(leds, 200);
+Life life(leds);
 
 Plasma plasma0(leds, RainbowColors_p);
 Plasma plasma1(leds, OceanColors_p);
@@ -96,9 +96,9 @@ Effect* effects0[] = {
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
 //  &plasma0, NULL
-//  &life, NULL
+  &life, NULL
 //  &perlin, NULL
-  &perlin, &scintillate, NULL
+//  &perlin, &scintillate, NULL
 };
 
 Effect* effects1[] = {

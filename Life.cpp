@@ -23,8 +23,10 @@ public:
         seed(96);
     }
 
-    void draw(uint8_t micVal) {
-        seed(micVal);
+    void draw(int rawPot, int rawMic, bool button) {
+        if (normalisedMicVal(rawMic) > 128) {      
+            seed(96);
+        }
 
 //      Serial.println("Current state:");
 //      for (int x = 0; x < WIDTH; x++) {

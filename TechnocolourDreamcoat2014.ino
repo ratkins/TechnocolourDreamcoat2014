@@ -8,6 +8,7 @@
 
 #include "LayoutTest.cpp"
 #include "ChaseTest.cpp"
+#include "PowerTest.cpp"
 #include "PlainColour.cpp"
 #include "AdvancingPaletteEffect.cpp"
 #include "FireEffect.cpp"
@@ -33,6 +34,9 @@ Encoder encoder(ENCODER_PIN0, ENCODER_PIN1);
 
 LayoutTest layoutTest(leds);
 ChaseTest chaseTest(leds);
+PowerTest powerTestRed(leds, CRGB::Red);
+PowerTest powerTestGreen(leds, CRGB::Green);
+PowerTest powerTestBlue(leds, CRGB::Blue);
 
 PlainColour plainColourRed(leds, CRGB::Red);
 PlainColour plainColourGreen(leds, CRGB::Green);
@@ -55,30 +59,6 @@ FireEffect fire08(leds, 8, HeatColors_p);
 FireEffect fire09(leds, 9, HeatColors_p);
 FireEffect fire10(leds, 10, HeatColors_p);
 FireEffect fire11(leds, 11, HeatColors_p);
-//FireEffect fire12(leds, 12, HeatColors_p);
-//FireEffect fire13(leds, 13, HeatColors_p);
-//FireEffect fire14(leds, 14, HeatColors_p);
-//FireEffect fire15(leds, 15, HeatColors_p);
-//FireEffect fire16(leds, 16, HeatColors_p);
-//FireEffect fire17(leds, 17, HeatColors_p);
-//FireEffect fire18(leds, 18, HeatColors_p);
-//FireEffect fire19(leds, 19, HeatColors_p);
-//FireEffect fire20(leds, 20, HeatColors_p);
-//FireEffect fire21(leds, 21, HeatColors_p);
-//FireEffect fire22(leds, 22, HeatColors_p);
-//FireEffect fire23(leds, 23, HeatColors_p);
-//FireEffect fire24(leds, 24, HeatColors_p);
-//FireEffect fire25(leds, 25, HeatColors_p);
-//FireEffect fire26(leds, 26, HeatColors_p);
-//FireEffect fire27(leds, 27, HeatColors_p);
-//FireEffect fire28(leds, 28, HeatColors_p);
-//FireEffect fire29(leds, 29, HeatColors_p);
-//FireEffect fire30(leds, 30, HeatColors_p);
-//FireEffect fire31(leds, 31, HeatColors_p);
-//FireEffect fire32(leds, 32, HeatColors_p);
-//FireEffect fire33(leds, 33, HeatColors_p);
-//FireEffect fire34(leds, 34, HeatColors_p);
-//FireEffect fire35(leds, 35, HeatColors_p);
 
 Life life(leds);
 
@@ -92,29 +72,28 @@ Perlin perlin(leds);
 Snake snake(leds);
 
 Effect* effects0[] = {
-//  &layoutTest, NULL
+  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
 //  &plasma0, NULL
-  &life, NULL
+//  &life, NULL
 //  &perlin, NULL
 //  &perlin, &scintillate, NULL
+//  &powerTestRed, NULL
 };
 
 Effect* effects1[] = {
-  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
-  &fire08, &fire09, &fire10, &fire11, NULL
+//  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
+//  &fire08, &fire09, &fire10, &fire11, NULL
 
-//, &fire12, &fire13, &fire14, &fire15,
-//  &fire16, &fire17, &fire18, &fire19, &fire20, &fire21, &fire22, &fire23,
-//  &fire24, &fire25, &fire26, &fire27, &fire28, &fire29, &fire30, &fire31,
-//  &fire32, &fire33, &fire34, &fire35, NULL  
+  &plainColourWhite, NULL
 };
 
 Effect* effects2[] = {
 //  &life, NULL
 //  &plainColourRed, NULL
   &scintillate, NULL
+//  &powerTestBlue, NULL
 };
 
 Effect** effectGroup[] = {
@@ -131,14 +110,15 @@ uint8_t encoderDebounce;
 
 int micVal;
 int potVal;
+bool buttonVal;
 
 uint8_t effectIndex = 0;
 
 void setup() {
   Serial.begin(57600);
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(128);
-//  set_max_power_in_volts_and_milliamps(5, 1650);
+//  FastLED.setBrightness(128);
+  set_max_power_in_milliwatts(5000);
   
   delay(2000);
   
@@ -155,30 +135,31 @@ void loop() {
 //      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
   }
   if (encoderDebounce == 0 && encoderVal != 0) {
-//    Serial.print("encoderVal = "); Serial.println(encoderVal);
-    effectGroupIndex += encoderVal;
-//    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
+    Serial.print("encoderVal = "); Serial.println(encoderVal);
+    effectGroupIndex += encoderVal > 0 ? 1 : -1;
+    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
     effects = effectGroup[effectGroupIndex % effectGroupCount];
     encoder.write(0);
 //    Serial.print("just about to increment encoderDebounce...");
-    encoderDebounce = 8;
+    encoderDebounce = 32;
 //    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
   }
-
-  potVal = analogRead(MIC_PIN);
-  micVal = analogRead(POT_PIN);
+  
+  potVal = analogRead(POT_PIN);
+  micVal = analogRead(MIC_PIN);
+  buttonVal = digitalRead(ENCODER_BUTTON_PIN) == HIGH;
   
   effectIndex = 0;
   while (effects[effectIndex] != NULL) {
-    effects[effectIndex++]->draw(micVal);
+    effects[effectIndex++]->draw(potVal, micVal, buttonVal);
   }
-  LEDS.show();
-//  show_at_max_brightness_for_power();
+//  LEDS.show();
+  show_at_max_brightness_for_power();
   
   unsigned long loopStartDelta = millis() - loopStartMillis;
   if (loopStartDelta < 1000 / FRAMES_PER_SECOND) {
-    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
-//    delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
+//    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
+    delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
   }  
   memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }

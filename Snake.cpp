@@ -52,7 +52,7 @@ class Snake : public Effect {
   public:
     Snake(CRGB *leds) : Effect(leds), initialHue(0) {}
     
-    virtual void draw(uint8_t micVal) {
+    virtual void draw(int rawPot, int rawMic, bool button) {
         shuffleDown();
         if (random(10) > 6) {
             newDirection();

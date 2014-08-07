@@ -22,7 +22,7 @@ class Effect {
   public:
     Effect(CRGB *leds) : leds(leds), deadPixel(CRGB::Black) {}
     
-    virtual void draw(uint8_t micVal) = 0;
+    virtual void draw(int rawPot, int rawMic, bool button) = 0;
     
     bool visible(int16_t x, int16_t y) {
       return x >= 0 && y >= 0 && x < WIDTH && y < columnHeights[x];
@@ -52,6 +52,16 @@ class Effect {
 //            Serial.print("pixel("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.println(") - deadPixel");
             return deadPixel;
         } 
+    }
+    
+    uint8_t normalisedPotVal(int rawPotVal) {
+        uint8_t normalised = map(rawPotVal, 0, 1023, 0, 255);
+        return normalised;
+    }
+
+    uint8_t normalisedMicVal(int rawMicVal) {
+        uint8_t normalised = map(rawMicVal, 0, 1023, 0, 255);
+        return normalised;
     }
     
 };

@@ -12,7 +12,7 @@ class ChaseTest : public Effect {
   public:
     ChaseTest(CRGB *leds) : Effect(leds), frame(0) {}
     
-    virtual void draw(uint8_t micVal) {
+    void draw(int rawPot, int rawMic, bool button) {
       leds[frame++ % NUM_LEDS] = CRGB::White;
     }
 

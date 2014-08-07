@@ -13,7 +13,7 @@ class Plasma : public Effect {
   public:
     Plasma(CRGB *leds, CRGBPalette16 palette) : Effect(leds), palette(palette), frame(0) {}
     
-    virtual void draw(uint8_t micVal) {
+    virtual void draw(int rawPot, int rawMic, bool button) {
         frame += 100;
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {

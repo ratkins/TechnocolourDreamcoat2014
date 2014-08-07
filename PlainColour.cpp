@@ -12,7 +12,7 @@ class PlainColour : public Effect {
   public:
     PlainColour(CRGB *leds, CRGB colour) : Effect(leds), colour(colour) {}
     
-    virtual void draw(uint8_t micVal) {
+    virtual void draw(int rawPot, int rawMic, bool button) {
       for (int i = 0; i < NUM_LEDS; i++) {
         leds[i] = colour;
       }

@@ -45,17 +45,24 @@ public:
 //      }
 //      Serial.println();
         
-        // Update the nextState array with the next generation
+        // Update the nextState array with the next generation (skip 0, our sentinel value)
         if (++hue == 0) {
             hue = 1;
         }
+        
 //        Serial.print("Hue for this generation = "); Serial.println(hue);
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
 //                Serial.print("draw() x = "); Serial.print(x); Serial.print(", y = "); Serial.println(y);
                 if (alive(x, y)) {
 //                    Serial.println("It lives!");
-                    (*nextState)[x][y] = hue;
+                    if ((*currState)[x][y] == 0) {
+                        // it's new, so give it the current hue
+                       (*nextState)[x][y] = hue;
+                    } else {
+                        // it's old, so give it the existing hue
+                        (*nextState)[x][y] = (*currState)[x][y];
+                    }
                 } else {
 //                    Serial.println("It dies!");                  
                     (*nextState)[x][y] = 0;  
@@ -145,7 +152,7 @@ public:
         }
         
         // bottom right
-        if ((*currState)[toroidalXindex(x - 1)][toroidalYindex(y - 1)] > 0) {
+        if ((*currState)[toroidalXindex(x + 1)][toroidalYindex(y - 1)] > 0) {
 //            Serial.println("bottom right");          
             neighbours++;
         }

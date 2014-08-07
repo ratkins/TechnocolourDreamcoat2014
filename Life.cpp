@@ -24,7 +24,7 @@ public:
     }
 
     void draw(int rawPot, int rawMic, bool button) {
-        if (normalisedMicVal(rawMic) > 128) {      
+        if (normalisedMicVal(rawMic, rawPot) > 128) {      
             seed(96);
         }
 

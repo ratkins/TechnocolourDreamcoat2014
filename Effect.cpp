@@ -59,8 +59,8 @@ class Effect {
         return normalised;
     }
 
-    uint8_t normalisedMicVal(int rawMicVal) {
-        uint8_t normalised = map(rawMicVal, 0, 1023, 0, 255);
+    uint8_t normalisedMicVal(int rawMicVal, int rawPotVal) {
+        uint8_t normalised = map((rawMicVal - 400) * rawPotVal, 1023 - 400, 1024 * 1024, 0, 255);
         return normalised;
     }
     

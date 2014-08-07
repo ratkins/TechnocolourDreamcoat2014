@@ -83,17 +83,18 @@ Effect* effects0[] = {
 };
 
 Effect* effects1[] = {
-//  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
-//  &fire08, &fire09, &fire10, &fire11, NULL
+  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
+  &fire08, &fire09, &fire10, &fire11, NULL
 
-  &plainColourWhite, NULL
+//  &plainColourWhite, NULL
 };
 
 Effect* effects2[] = {
-//  &life, NULL
+  &life, NULL
 //  &plainColourRed, NULL
-  &scintillate, NULL
+//  &scintillate, NULL
 //  &powerTestBlue, NULL
+//  &layoutTest, NULL
 };
 
 Effect** effectGroup[] = {

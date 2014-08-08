@@ -17,6 +17,7 @@
 #include "Scintillate.cpp"
 #include "Perlin.cpp"
 #include "Snake.cpp"
+#include "SoundSaturation.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -71,14 +72,17 @@ Perlin perlin(leds);
 
 Snake snake(leds);
 
+SoundSaturation soundSaturation(leds);
+
 Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
 //  &plasma0, NULL
 //  &life, NULL
-  &perlin, NULL
+//  &perlin, NULL
 //  &perlin, &scintillate, NULL
+  &perlin, &soundSaturation, NULL
 //  &powerTestRed, NULL
 };
 
@@ -118,8 +122,10 @@ uint8_t effectIndex = 0;
 void setup() {
   Serial.begin(57600);
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(128);
-//  set_max_power_in_milliwatts(5000);
+  
+  pinMode(13, OUTPUT);
+  set_max_power_indicator_LED(13);
+  set_max_power_in_milliwatts(80000);
   
   delay(2000);
   
@@ -154,13 +160,13 @@ void loop() {
   while (effects[effectIndex] != NULL) {
     effects[effectIndex++]->draw(potVal, micVal, buttonVal);
   }
-  LEDS.show();
-//  show_at_max_brightness_for_power();
+//  LEDS.show();
+  show_at_max_brightness_for_power();
   
   unsigned long loopStartDelta = millis() - loopStartMillis;
   if (loopStartDelta < 1000 / FRAMES_PER_SECOND) {
-    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
-//    delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
+//    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
+    delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
   }  
   memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }

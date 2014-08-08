@@ -10,28 +10,29 @@ class Scintillate : public Effect {
   
   private:
     bool soundReactive;
-    uint8_t value;
+    uint8_t brightness;
     
   public:
-    Scintillate(CRGB *leds) : Effect(leds), soundReactive(false), value(255) {}
+    Scintillate(CRGB *leds) : Effect(leds), soundReactive(false), brightness(0) {}
     
     virtual void draw(int rawPot, int rawMic, bool button) {
         soundReactive = button ? !soundReactive : soundReactive;
         
         if (normalisedMicVal(rawMic, rawPot) > SOUND_THRESHOLD) {
-            value = 0;
+            brightness = 0;
         }
         
-        value = constrain(value + 32, 0, 255);        
         for (int i = 0; i < NUM_LEDS; i++) {
             if (DENSITY > random(NUM_LEDS)) {
                 if (soundReactive) {
-                    leds[i] = CHSV(0, 0, value);
+                    nblend(leds[i], CRGB::White, brightness);                    
                 } else {
                     leds[i] = CRGB::White;
                 }
             }
         }
+        brightness = constrain(brightness + 32, 0, 255);        
+        
     }
     
 };

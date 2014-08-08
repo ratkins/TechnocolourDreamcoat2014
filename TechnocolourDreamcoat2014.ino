@@ -78,13 +78,14 @@ Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
-  &scintillate, NULL
+//  &scintillate, NULL
 //  &plasma0, NULL
 //  &life, NULL
 //  &perlin, NULL
 //  &perlin, &scintillate, NULL
 //  &perlin, &soundSaturation, NULL
 //  &plasma0, &soundSaturation, NULL
+  &plasma0, &scintillate, NULL
 //  &powerTestRed, NULL
 };
 

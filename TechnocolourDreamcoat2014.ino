@@ -78,11 +78,13 @@ Effect* effects0[] = {
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
+  &scintillate, NULL
 //  &plasma0, NULL
 //  &life, NULL
 //  &perlin, NULL
 //  &perlin, &scintillate, NULL
-  &perlin, &soundSaturation, NULL
+//  &perlin, &soundSaturation, NULL
+//  &plasma0, &soundSaturation, NULL
 //  &powerTestRed, NULL
 };
 
@@ -115,7 +117,9 @@ uint8_t encoderDebounce;
 
 int micVal;
 int potVal;
+
 bool buttonVal;
+uint8_t buttonDebounce;
 
 uint8_t effectIndex = 0;
 
@@ -154,12 +158,19 @@ void loop() {
   
   potVal = analogRead(POT_PIN);
   micVal = analogRead(MIC_PIN);
-  buttonVal = digitalRead(ENCODER_BUTTON_PIN) == HIGH;
   
+  if (buttonDebounce > 0) {
+      buttonDebounce--;
+  }
+  if (buttonDebounce == 0 && digitalRead(ENCODER_BUTTON_PIN) == LOW) {
+      buttonVal = true;
+      buttonDebounce = 16;
+  }
   effectIndex = 0;
   while (effects[effectIndex] != NULL) {
     effects[effectIndex++]->draw(potVal, micVal, buttonVal);
   }
+  buttonVal = false;
 //  LEDS.show();
   show_at_max_brightness_for_power();
   

@@ -7,6 +7,8 @@
 #define HEIGHT 20
 #define NUM_LEDS 640 // 38.4A, motherfuckers
 
+#define SOUND_THRESHOLD 128
+
 class Effect {
   
   protected:

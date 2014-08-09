@@ -17,7 +17,9 @@ class SoundSaturation : public Effect {
             brightness = 255;
         }
         for (int i = 0; i < NUM_LEDS; i++) {
-            nblend(leds[i], CRGB::White, brightness);
+            if (leds[i]) {          
+                nblend(leds[i], CRGB::White, brightness);
+            }
         }
         brightness = constrain(brightness - 32, 0, 255);
     }

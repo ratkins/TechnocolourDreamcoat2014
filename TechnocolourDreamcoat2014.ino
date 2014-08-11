@@ -86,7 +86,7 @@ SoundSaturation soundSaturation(leds);
 FunkyClouds funkyClouds(leds);
 
 Effect* effects0[] = {
-//  &snake, &soundSaturation, NULL
+  &snake, &soundSaturation, NULL
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
@@ -144,7 +144,7 @@ Effect* effects11[] = {
 
 uint8_t effectGroupCount = 12;
 Effect** effectGroup[] = {
-  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects12
+  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects11
 };
 
 uint8_t effectGroupIndex = 0;

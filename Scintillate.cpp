@@ -31,7 +31,7 @@ class Scintillate : public Effect {
                 }
             }
         }
-        brightness = constrain(brightness + 32, 0, 255);        
+        brightness = constrain(brightness + 16, 0, 255);        
         
     }
     

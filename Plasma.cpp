@@ -11,24 +11,28 @@ class Plasma : public Effect {
     CRGBPalette16 palette;
     
     uint8_t paletteIdx = 0;
-//    CRGBPalette16 *palettes[6] = {
-//        &RainbowColors_p,
-//        &RainbowStripeColors_p,
-//        &PartyColors_p,
-//        &OceanColors_p,
-//        &ForestColors_p,
-//        &CloudColors_p,  
-//    };
-    uint8_t paletteCount = 6;
+    static const uint8_t paletteCount = 6;    
+    CRGBPalette16 palettes[paletteCount] = {
+        CRGBPalette16(RainbowColors_p),
+        CRGBPalette16(RainbowStripeColors_p),
+        CRGBPalette16(PartyColors_p),
+        CRGBPalette16(OceanColors_p),
+        CRGBPalette16(ForestColors_p),
+        CRGBPalette16(CloudColors_p),  
+    };
+
   
   public:
-    Plasma(CRGB *leds) : Effect(leds), paletteIdx(0), frame(0) {}
+    Plasma(CRGB *leds) : Effect(leds), paletteIdx(0), frame(0) {
+        palette = palettes[paletteIdx];
+    }
     
     virtual void draw(int rawPot, int rawMic, bool button) {
-//        if (button) {
-//            palette = *palettes[++paletteIdx % paletteCount];
-//        }
-        palette = RainbowColors_p;
+        if (button) {
+            palette = palettes[++paletteIdx % paletteCount];
+            Serial.print("Set palette to "); Serial.print(paletteIdx % paletteCount);
+        }
+//        palette = RainbowColors_p;
         
         frame += 100;
         for (int x = 0; x < WIDTH; x++) {

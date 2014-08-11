@@ -18,6 +18,9 @@
 #include "Perlin.cpp"
 #include "Snake.cpp"
 #include "SoundSaturation.cpp"
+//#include "RotatingCube.cpp"
+//#include "Mandelbrot.cpp"
+#include "RandomPainter.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -49,22 +52,21 @@ AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p);
 AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
 
 FireEffect fire00(leds, 0, HeatColors_p);
-FireEffect fire01(leds, 1, HeatColors_p);
-FireEffect fire02(leds, 2, HeatColors_p);
-FireEffect fire03(leds, 3, HeatColors_p);
-FireEffect fire04(leds, 4, HeatColors_p);
-FireEffect fire05(leds, 5, HeatColors_p);
-FireEffect fire06(leds, 6, HeatColors_p);
-FireEffect fire07(leds, 7, HeatColors_p);
-FireEffect fire08(leds, 8, HeatColors_p);
-FireEffect fire09(leds, 9, HeatColors_p);
-FireEffect fire10(leds, 10, HeatColors_p);
-FireEffect fire11(leds, 11, HeatColors_p);
+//FireEffect fire01(leds, 1, HeatColors_p);
+//FireEffect fire02(leds, 2, HeatColors_p);
+//FireEffect fire03(leds, 3, HeatColors_p);
+//FireEffect fire04(leds, 4, HeatColors_p);
+//FireEffect fire05(leds, 5, HeatColors_p);
+//FireEffect fire06(leds, 6, HeatColors_p);
+//FireEffect fire07(leds, 7, HeatColors_p);
+//FireEffect fire08(leds, 8, HeatColors_p);
+//FireEffect fire09(leds, 9, HeatColors_p);
+//FireEffect fire10(leds, 10, HeatColors_p);
+//FireEffect fire11(leds, 11, HeatColors_p);
 
 Life life(leds);
 
-Plasma plasma0(leds, RainbowColors_p);
-Plasma plasma1(leds, OceanColors_p);
+Plasma plasma(leds);
 
 Scintillate scintillate(leds);
 
@@ -74,46 +76,71 @@ Snake snake(leds);
 
 SoundSaturation soundSaturation(leds);
 
+//RotatingCube cube(leds);
+//
+//Mandelbrot mandelbrot(leds);
+
+RandomPainter randomPainter(leds);
+
 Effect* effects0[] = {
+//  &snake, &soundSaturation, NULL
 //  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
-//  &scintillate, NULL
-//  &plasma0, NULL
-//  &life, NULL
-//  &perlin, NULL
-//  &perlin, &scintillate, NULL
-//  &perlin, &soundSaturation, NULL
-//  &plasma0, &soundSaturation, NULL
-//  &plasma0, &scintillate, NULL
-  &snake, &soundSaturation, NULL
-  
-//  &powerTestRed, NULL
+//  &mandelbrot, NULL
+  &randomPainter, NULL
 };
 
 Effect* effects1[] = {
-  &fire00, &fire01, &fire02, &fire03, &fire04, &fire05, &fire06, &fire07,
-  &fire08, &fire09, &fire10, &fire11, NULL
-
-//  &plainColourWhite, NULL
+  &scintillate, NULL
 };
 
 Effect* effects2[] = {
-  &life, NULL
-//  &plainColourRed, NULL
-//  &scintillate, NULL
-//  &powerTestBlue, NULL
-//  &layoutTest, NULL
+  &fire00, // &fire01, &fire02, &fire03, 
+//  &fire04, &fire05, &fire06, &fire07,
+//  &fire08, &fire09, &fire10, &fire11,
+  NULL
 };
 
+Effect* effects3[] = {
+  &perlin, NULL
+};
+
+Effect* effects4[] = {
+  &perlin, &scintillate, NULL
+};
+
+Effect* effects5[] = {
+  &perlin, &soundSaturation, NULL
+};
+
+Effect* effects6[] = {
+  &plasma, NULL
+};
+
+Effect* effects7[] = {
+  &plasma, &scintillate, NULL
+};
+
+Effect* effects8[] = {
+  &plasma, &soundSaturation, NULL
+};
+
+Effect* effects9[] = {
+  &snake, &scintillate, NULL
+};
+
+Effect* effects10[] = {
+  &life, &soundSaturation, NULL
+};
+
+uint8_t effectGroupCount = 11;
 Effect** effectGroup[] = {
-  effects0, effects1, effects2
+  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10
 };
 
-Effect **effects = effectGroup[0];
-
-uint8_t effectGroupCount = 3;
 uint8_t effectGroupIndex = 0;
+Effect **effects = effectGroup[0];
 
 long encoderVal;
 uint8_t encoderDebounce;
@@ -140,49 +167,57 @@ void setup() {
 }
 
 void loop() {
-  unsigned long loopStartMillis = millis();
-//  Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);        
-  encoderVal = encoder.read();
-  if (encoderDebounce > 0) {
-      encoder.write(0);
-      encoderDebounce--;
-//      Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
-  }
-  if (encoderDebounce == 0 && encoderVal != 0) {
-    Serial.print("encoderVal = "); Serial.println(encoderVal);
-    effectGroupIndex += encoderVal > 0 ? 1 : -1;
-    Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
-    effects = effectGroup[effectGroupIndex % effectGroupCount];
-    encoder.write(0);
-//    Serial.print("just about to increment encoderDebounce...");
-    encoderDebounce = 32;
-//    Serial.print(" encoderDebounce = "); Serial.println(encoderDebounce);      
-  }
-  
-  potVal = analogRead(POT_PIN);
-  micVal = analogRead(MIC_PIN);
-  
-  if (buttonDebounce > 0) {
-      buttonDebounce--;
-  }
-  if (buttonDebounce == 0 && digitalRead(ENCODER_BUTTON_PIN) == LOW) {
-      buttonVal = true;
-      buttonDebounce = 16;
-  }
-  effectIndex = 0;
-  while (effects[effectIndex] != NULL) {
-    effects[effectIndex++]->draw(potVal, micVal, buttonVal);
-  }
-  buttonVal = false;
-//  LEDS.show();
-  show_at_max_brightness_for_power();
-  
-  unsigned long loopStartDelta = millis() - loopStartMillis;
-  if (loopStartDelta < 1000 / FRAMES_PER_SECOND) {
-//    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
-    delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
-  }  
-  memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
+    unsigned long loopStartMillis = millis();
+//    Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);        
+    encoderVal = encoder.read();
+    if (encoderDebounce > 0) {
+        encoder.write(0);
+        encoderDebounce--;
+//        Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
+    }
+    if (encoderDebounce == 0 && encoderVal != 0) {
+        if (digitalRead(ENCODER_BUTTON_PIN) == LOW) {
+            // set master brightness
+//            Serial.print("Setting master brightness + "); Serial.println(constrain(FastLED.getBrightness() + encoderVal, 0, 255));
+            FastLED.setBrightness(constrain(FastLED.getBrightness() + encoderVal, 0, 255));
+            encoderDebounce = 0;
+        } else {
+            // advance effect
+//            Serial.print("encoderVal = "); Serial.println(encoderVal);
+            effectGroupIndex += encoderVal > 0 ? 1 : -1;
+//            Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
+            effects = effectGroup[effectGroupIndex % effectGroupCount];
+//            Serial.print("just about to increment encoderDebounce...");
+            encoderDebounce = 16;    
+        }
+        encoder.write(0);
+    }
+    
+    potVal = analogRead(POT_PIN);
+    micVal = analogRead(MIC_PIN);
+    
+    if (buttonDebounce > 0) {
+        buttonDebounce--;
+    }
+    if (buttonDebounce == 0 && digitalRead(ENCODER_BUTTON_PIN) == LOW) {
+        buttonVal = true;
+        buttonDebounce = 16;
+    }
+    Serial.print("Rendering effects with button = "); Serial.println(buttonVal);
+    effectIndex = 0;
+    while (effects[effectIndex] != NULL) {
+        effects[effectIndex++]->draw(potVal, micVal, buttonVal);
+    }
+    buttonVal = false;
+  //  LEDS.show();
+    show_at_max_brightness_for_power();
+    
+    unsigned long loopStartDelta = millis() - loopStartMillis;
+    if (loopStartDelta < 1000 / FRAMES_PER_SECOND) {
+  //    LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
+        delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
+    }  
+    memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
 
 

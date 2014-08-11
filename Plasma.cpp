@@ -9,11 +9,27 @@ class Plasma : public Effect {
   private:
     uint16_t frame;
     CRGBPalette16 palette;
+    
+    uint8_t paletteIdx = 0;
+//    CRGBPalette16 *palettes[6] = {
+//        &RainbowColors_p,
+//        &RainbowStripeColors_p,
+//        &PartyColors_p,
+//        &OceanColors_p,
+//        &ForestColors_p,
+//        &CloudColors_p,  
+//    };
+    uint8_t paletteCount = 6;
   
   public:
-    Plasma(CRGB *leds, CRGBPalette16 palette) : Effect(leds), palette(palette), frame(0) {}
+    Plasma(CRGB *leds) : Effect(leds), paletteIdx(0), frame(0) {}
     
     virtual void draw(int rawPot, int rawMic, bool button) {
+//        if (button) {
+//            palette = *palettes[++paletteIdx % paletteCount];
+//        }
+        palette = RainbowColors_p;
+        
         frame += 100;
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {

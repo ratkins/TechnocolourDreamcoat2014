@@ -65,7 +65,81 @@ class Effect {
         uint8_t normalised = map((rawMicVal - 400) * rawPotVal, 1023 - 400, 1024 * 1024, 0, 255);
         return normalised;
     }
+
+    void line(int8_t x1, int8_t y1, int8_t x2, int8_t y2) {
+        Serial.print("line("); Serial.print(x1); Serial.print(", ");Serial.print(y1); Serial.print(", "); Serial.print(x2); Serial.print(", ");Serial.print(y2); Serial.println(")");
+        if ( (x1>=25 && x2>=25) || (y1>=25 && y2>=25) ) return;
+        int8_t dx = abs(x2 -x1);
+        int8_t dy = abs(y2 -y1);
+      
+        int8_t p1x,p1y,p2x,p2y,i;
+  
+        if (dx > dy) {
+            if (x2>x1) {
+                p1x=x1;
+                p1y=y1;
+                p2x=x2;
+                p2y=y2;
+            } else {
+                p1x=x2;
+                p1y=y2;
+                p2x=x1;
+                p2y=y1;
+            }
+          
+            int8_t y = p1y;
+            int8_t x = p1x;
+            int8_t count = 0;
+            int8_t increment = p2y > p1y ? 1 : -1;
+            for (i=0; i<=dx; i++) {   
+                count += dy;
+                if (count > dx) {
+                    count -= dx; 
+                    y+= increment;
+                }                         
+                if (y>=0 && y<25 && x>=0 && x<25) {
+                    pixel(x, y) = CRGB::White;
+                }
+                x++; 
+                if (x>=25) {
+                    break;
+                }
+            }
+        } else {
+            if (y2>y1) {
+                p1x=x1;
+                p1y=y1;
+                p2x=x2;
+                p2y=y2;
+            } else {
+                p1x=x2;
+                p1y=y2;
+                p2x=x1;
+                p2y=y1;
+            }
+            int8_t y = p1y;
+            int8_t x = p1x;
+            int8_t count = 0;
+            int8_t increment = p2x > p1x ? 1 : -1;
+            for (i=0; i<=dy; i++) {   
+                count += dx;
+                if (count > dy) {
+                    count -= dy; 
+                    x+= increment;
+                }                         
+                if (y>=0 && y<25 && x>=0 && x<25) {
+                    pixel(x, y) = CRGB::White;
+                }
+                y+=1; 
+                if (y>=25) {
+                    break;
+                }
+            }
+        }    
+    }
     
 };
+
+
 
 #endif

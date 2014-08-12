@@ -51,3 +51,4 @@ class FireEffect : public Effect {
 };
 
 #endif
+

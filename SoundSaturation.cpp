@@ -27,3 +27,4 @@ class SoundSaturation : public Effect {
 };
 
 #endif
+

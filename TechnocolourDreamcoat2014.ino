@@ -21,7 +21,8 @@
 //#include "RotatingCube.cpp"
 //#include "Mandelbrot.cpp"
 //#include "RandomPainter.cpp"
-#include "FunkyClouds.cpp"
+#include "FunkyLine.cpp"
+#include "MiniClouds.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -83,7 +84,8 @@ SoundSaturation soundSaturation(leds);
 
 //RandomPainter randomPainter(leds);
 
-FunkyClouds funkyClouds(leds);
+FunkyLine funkyLine(leds);
+MiniClouds miniClouds(leds);
 
 Effect* effects0[] = {
   &snake, &soundSaturation, NULL
@@ -139,12 +141,16 @@ Effect* effects10[] = {
 };
 
 Effect* effects11[] = {
-  &funkyClouds, &soundSaturation, NULL
+  &funkyLine, &soundSaturation, NULL
 };
 
-uint8_t effectGroupCount = 12;
+Effect* effects12[] = {
+  &miniClouds, &soundSaturation, NULL
+};
+
+uint8_t effectGroupCount = 13;
 Effect** effectGroup[] = {
-  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects11
+  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects11, effects12
 };
 
 uint8_t effectGroupIndex = 0;
@@ -229,3 +235,4 @@ void loop() {
     }  
     memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
+

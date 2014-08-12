@@ -11,3 +11,4 @@ class EffectGroup {
 };
 
 #endif
+

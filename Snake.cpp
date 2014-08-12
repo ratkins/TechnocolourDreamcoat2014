@@ -80,3 +80,4 @@ class Snake : public Effect {
 };
 
 #endif
+

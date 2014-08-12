@@ -69,10 +69,10 @@ class FunkyClouds : public Effect {
 //        SpiralStream(10, 24, 10, 128); // play here
     
 //        // y wind
-//        StreamVertical(120);    // and here
+        StreamVertical(160);    // and here
 //    
 //        // x wind
-//        StreamHorizontal(110);  // and here
+        StreamHorizontal(160);  // and here
 //    
 //        // main spiral
 //        SpiralStream(15, 15, 15, 150); // and here
@@ -105,20 +105,28 @@ class FunkyClouds : public Effect {
     void SpiralStream(int x, int y, int r, byte dimm) {
         for (int d = r; d >= 0; d--) {                // from the outside to the inside
             for (int i = x - d; i <= x + d; i++) {
-                pixel(i, y - d) += pixel(i + 1, y - d);   // lowest row to the right
-                pixel(i, y - d).nscale8(dimm);
+                if (y - d < maxY(i + 1)) {
+                    pixel(i, y - d) += pixel(i + 1, y - d);   // lowest row to the right
+                    pixel(i, y - d).nscale8(dimm);
+                }
             }
             for (int i = y - d; i <= y + d; i++) {
-                pixel(x + d, i) += pixel(x + d, i + 1);   // right colum up
-                pixel(x + d, i).nscale8(dimm);
+                if (i + 1 < maxY(x + d)) {
+                    pixel(x + d, i) += pixel(x + d, i + 1);   // right colum up
+                    pixel(x + d, i).nscale8(dimm);
+                }
             }
             for (int i = x + d; i >= x - d; i--) {
-                pixel(i, y + d) += pixel(i - 1, y + d);   // upper row to the left
-                pixel(i, y + d).nscale8(dimm);
+                if (y + d < maxY(i - 1)) {
+                    pixel(i, y + d) += pixel(i - 1, y + d);   // upper row to the left
+                    pixel(i, y + d).nscale8(dimm);
+                }
             }
             for (int i = y + d; i >= y - d; i--) {
-                pixel(x - d, i) += pixel(x - d, i - 1);   // left colum down
-                pixel(x - d, i).nscale8(dimm);
+                if (i - 1 < maxY(x -d)) {
+                    pixel(x - d, i) += pixel(x - d, i - 1);   // left colum down
+                    pixel(x - d, i).nscale8(dimm);
+                }
             }
         }
     }
@@ -128,8 +136,10 @@ class FunkyClouds : public Effect {
     {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 1; y < HEIGHT; y++) {
-                pixel(x, y) += pixel(x, y - 1);
-                pixel(x, y).nscale8(scale);
+                if (y - 1 < maxY(x)) {
+                    pixel(x, y) += pixel(x, y - 1);
+                    pixel(x, y).nscale8(scale);
+                }
             }
         }
         for (int x = 0; x < WIDTH; x++) {
@@ -142,8 +152,10 @@ class FunkyClouds : public Effect {
     {
         for (int x = 1; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
-                pixel(x, y) += pixel(x - 1, y);
-                pixel(x, y).nscale8(scale);
+                if (y < maxY(x - 1)) {
+                    pixel(x, y) += pixel(x - 1, y);
+                    pixel(x, y).nscale8(scale);
+                }
             }
         }
         for (int y = 0; y < HEIGHT; y++) {

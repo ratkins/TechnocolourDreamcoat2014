@@ -17,74 +17,65 @@ class FunkyClouds : public Effect {
         byte up;
         byte down;
     };
-    timer multiTimer[7];
+    timer multiTimer[5];
     int timers = sizeof(multiTimer) / sizeof(multiTimer[0]);
   
   public:
     FunkyClouds(CRGB *leds) : Effect(leds), frame(0) {
-        multiTimer[0].tact = 70;     //x1
+        multiTimer[0].tact = 32;     //x1
         multiTimer[0].up = WIDTH - 1;
         multiTimer[0].down = 0;
+        multiTimer[0].count = 0;
     
-        multiTimer[1].tact = 50;     //y1
+        multiTimer[1].tact = 35;     //y1
         multiTimer[1].up = HEIGHT - 1;
         multiTimer[1].down = 0;
+        multiTimer[1].count = 0;        
     
         multiTimer[2].tact = 3;      //color
         multiTimer[2].up = 255;
         multiTimer[2].down = 0;
-    
-        multiTimer[3].tact = 76;     //x2  
+        multiTimer[2].count = 0;
+        
+        multiTimer[3].tact = 41;     //x2  
         multiTimer[3].up = WIDTH - 1;
         multiTimer[3].down = 0;
+        multiTimer[3].count = 0;        
     
-        multiTimer[4].tact = 99;     //y2
+        multiTimer[4].tact = 49;     //y2
         multiTimer[4].up = HEIGHT - 1;
         multiTimer[4].down = 0;
-    
-        multiTimer[5].tact = 73;    //center spiral x
-        multiTimer[5].up = HEIGHT - 4;
-        multiTimer[5].down = 0;
-    
-        multiTimer[6].tact = 145;    //center spiral y
-        multiTimer[6].up = HEIGHT - 4;
-        multiTimer[6].down = 0;
-    
-        // set counting directions positive for the beginning
-        // and start with random values to keep the start interesting
+        multiTimer[4].count = 0;        
     
         for (int i = 0; i < timers; i++) {
             multiTimer[i].delta = 1;
-            multiTimer[i].count = random(multiTimer[i].up);
+//            multiTimer[i].count = random(multiTimer[i].up);
         }      
     }
     
     void draw(int rawPot, int rawMic, bool button) {
         // let the oscillators swing
         UpdateTimers();
-    
-        // the "seed": 3 moving dots
-        pixel(multiTimer[0].count, multiTimer[1].count) = CHSV(multiTimer[2].count, 255, 255);
-    
-        pixel(multiTimer[3].count, multiTimer[4].count) = CHSV(255 - multiTimer[2].count, 255, 255);
-    
-        // coordinates are the average of 2 oscillators
-        pixel((multiTimer[0].count + multiTimer[1].count) / 2, (multiTimer[3].count + multiTimer[4].count) / 2) = CHSV(multiTimer[2].count / 2, 255, 255);
-    
-        // the balance of the (last) values of the following functions affects the
-        // appearence of the effect a lot
+
+        Line(multiTimer[3].count,
+            multiTimer[4].count,
+            multiTimer[0].count,
+            multiTimer[1].count,
+            multiTimer[2].count);    
     
         // a moving spiral
-        SpiralStream(multiTimer[5].count, multiTimer[6].count, 2, 255); // play here
+//        SpiralStream(15, 15, 16, 128); // play here
+//        SpiralStream(16, 6, 6, 128); // play here
+//        SpiralStream(10, 24, 10, 128); // play here
     
-        // y wind
-        StreamVertical(120);    // and here
-    
-        // x wind
-        StreamHorizontal(110);  // and here
-    
-        // main spiral
-        SpiralStream(15, 15, 15, 150); // and here
+//        // y wind
+//        StreamVertical(120);    // and here
+//    
+//        // x wind
+//        StreamHorizontal(110);  // and here
+//    
+//        // main spiral
+//        SpiralStream(15, 15, 15, 150); // and here
     
         // increase the contrast
         DimmAll(250);
@@ -159,6 +150,22 @@ class FunkyClouds : public Effect {
             pixel(0, y).nscale8(scale);
         }
     }
+    
+    // Bresenham line
+    void Line(int x0, int y0, int x1, int y1, byte color)
+    {
+        int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+        int dy = -abs(y1 - y0), sy = y0<y1 ? 1 : -1;
+        int err = dx + dy, e2;
+        for (;;) {
+            pixel(x0, y0) += CHSV(color, 255, 255);
+            if (x0 == x1 && y0 == y1) break;
+            e2 = 2 * err;
+            if (e2 > dy) { err += dy; x0 += sx; }
+            if (e2 < dx) { err += dx; y0 += sy; }
+        }
+    }
+
     
     // scale the brightness of the screenbuffer down
     void DimmAll(byte value)

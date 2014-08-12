@@ -181,7 +181,7 @@ void loop() {
     if (encoderDebounce > 0) {
         encoder.write(0);
         encoderDebounce--;
-//        Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
+        Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
     }
     if (encoderDebounce == 0 && encoderVal != 0) {
         if (digitalRead(ENCODER_BUTTON_PIN) == LOW) {
@@ -192,9 +192,11 @@ void loop() {
         } else {
             // advance effect
 //            Serial.print("encoderVal = "); Serial.println(encoderVal);
-            effectGroupIndex += encoderVal > 0 ? 1 : -1;
-//            Serial.print("effectGroupIndex = "); Serial.print(effectGroupIndex); Serial.print(", aka "); Serial.println(effectGroupIndex % effectGroupCount);
-            effects = effectGroup[effectGroupIndex % effectGroupCount];
+            encoderVal > 0 ? effectGroupIndex++ : effectGroupIndex--;
+            effectGroupIndex = effectGroupIndex == effectGroupCount ? 0 : effectGroupIndex;
+            effectGroupIndex = effectGroupIndex == 255 ? effectGroupCount - 1 : effectGroupIndex;
+//            Serial.print("effectGroupIndex = "); Serial.println(effectGroupIndex);
+            effects = effectGroup[effectGroupIndex];
 //            Serial.print("just about to increment encoderDebounce...");
             encoderDebounce = 16;    
         }
@@ -227,5 +229,3 @@ void loop() {
     }  
     memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
-
-

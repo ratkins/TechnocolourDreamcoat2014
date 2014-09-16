@@ -4,15 +4,7 @@
 #include "FastLED.h"
 #include "Effect.cpp"
 
-class Plasma : public Effect {
-  
-  private:
-    uint16_t frame;
-    CRGBPalette16 palette;
-    
-    uint8_t paletteIdx = 0;
-    static const uint8_t paletteCount = 6;    
-    CRGBPalette16 palettes[paletteCount] = {
+    CRGBPalette16 palettes[] = {
         CRGBPalette16(RainbowColors_p),
         CRGBPalette16(RainbowStripeColors_p),
         CRGBPalette16(PartyColors_p),
@@ -20,6 +12,15 @@ class Plasma : public Effect {
         CRGBPalette16(ForestColors_p),
         CRGBPalette16(CloudColors_p),  
     };
+
+class Plasma : public Effect {
+  
+  private:
+    uint16_t frame;
+    CRGBPalette16 palette;
+    
+    uint8_t paletteIdx;
+    static const uint8_t paletteCount = 6;    
 
   
   public:

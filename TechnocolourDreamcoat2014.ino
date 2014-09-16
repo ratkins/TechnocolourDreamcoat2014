@@ -1,6 +1,10 @@
 #include <FastLED.h>
 
 //#define ENCODER_DO_NOT_USE_INTERRUPTS
+
+#define REGULAR_GRID_TOPLEFT_ORIGIN 1
+//#define DREAMCOAT
+
 #include <Encoder.h>
 
 #include "Effect.cpp"
@@ -9,20 +13,20 @@
 #include "LayoutTest.cpp"
 #include "ChaseTest.cpp"
 #include "PowerTest.cpp"
-#include "PlainColour.cpp"
-#include "AdvancingPaletteEffect.cpp"
-#include "FireEffect.cpp"
-#include "Life.cpp"
-#include "Plasma.cpp"
-#include "Scintillate.cpp"
-#include "Perlin.cpp"
-#include "Snake.cpp"
-#include "SoundSaturation.cpp"
+//#include "PlainColour.cpp"
+//#include "AdvancingPaletteEffect.cpp"
+//#include "FireEffect.cpp"
+//#include "Life.cpp"
+//#include "Plasma.cpp"
+//#include "Scintillate.cpp"
+//#include "Perlin.cpp"
+//#include "Snake.cpp"
+//#include "SoundSaturation.cpp"
 //#include "RotatingCube.cpp"
 //#include "Mandelbrot.cpp"
 //#include "RandomPainter.cpp"
-#include "FunkyLine.cpp"
-#include "MiniClouds.cpp"
+//#include "FunkyLine.cpp"
+//#include "MiniClouds.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -30,7 +34,7 @@
 #define ENCODER_PIN1 5
 #define ENCODER_BUTTON_PIN 2
 
-#define DATA_PIN 3
+#define DATA_PIN 9
 
 #define FRAMES_PER_SECOND 60
 
@@ -44,39 +48,39 @@ PowerTest powerTestRed(leds, CRGB::Red);
 PowerTest powerTestGreen(leds, CRGB::Green);
 PowerTest powerTestBlue(leds, CRGB::Blue);
 
-PlainColour plainColourRed(leds, CRGB::Red);
-PlainColour plainColourGreen(leds, CRGB::Green);
-PlainColour plainColourBlue(leds, CRGB::Blue);
-PlainColour plainColourWhite(leds, CRGB::White);
-
-AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
-AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
-AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
-
-FireEffect fire00(leds, 0, HeatColors_p);
-FireEffect fire01(leds, 1, HeatColors_p);
-FireEffect fire02(leds, 2, HeatColors_p);
-FireEffect fire03(leds, 3, HeatColors_p);
-FireEffect fire04(leds, 4, HeatColors_p);
-FireEffect fire05(leds, 5, HeatColors_p);
-FireEffect fire06(leds, 6, HeatColors_p);
-FireEffect fire07(leds, 7, HeatColors_p);
-FireEffect fire08(leds, 8, HeatColors_p);
-FireEffect fire09(leds, 9, HeatColors_p);
-FireEffect fire10(leds, 10, HeatColors_p);
-FireEffect fire11(leds, 11, HeatColors_p);
-
-Life life(leds);
-
-Plasma plasma(leds);
-
-Scintillate scintillate(leds);
-
-Perlin perlin(leds);
-
-Snake snake(leds);
-
-SoundSaturation soundSaturation(leds);
+//PlainColour plainColourRed(leds, CRGB::Red);
+//PlainColour plainColourGreen(leds, CRGB::Green);
+//PlainColour plainColourBlue(leds, CRGB::Blue);
+//PlainColour plainColourWhite(leds, CRGB::White);
+//
+//AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
+//AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
+//AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
+//
+//FireEffect fire00(leds, 0, HeatColors_p);
+//FireEffect fire01(leds, 1, HeatColors_p);
+//FireEffect fire02(leds, 2, HeatColors_p);
+//FireEffect fire03(leds, 3, HeatColors_p);
+//FireEffect fire04(leds, 4, HeatColors_p);
+//FireEffect fire05(leds, 5, HeatColors_p);
+//FireEffect fire06(leds, 6, HeatColors_p);
+//FireEffect fire07(leds, 7, HeatColors_p);
+//FireEffect fire08(leds, 8, HeatColors_p);
+//FireEffect fire09(leds, 9, HeatColors_p);
+//FireEffect fire10(leds, 10, HeatColors_p);
+//FireEffect fire11(leds, 11, HeatColors_p);
+//
+//Life life(leds);
+//
+//Plasma plasma(leds);
+//
+//Scintillate scintillate(leds);
+//
+//Perlin perlin(leds);
+//
+//Snake snake(leds);
+//
+//SoundSaturation soundSaturation(leds);
 
 //RotatingCube cube(leds);
 //
@@ -84,12 +88,12 @@ SoundSaturation soundSaturation(leds);
 
 //RandomPainter randomPainter(leds);
 
-FunkyLine funkyLine(leds);
-MiniClouds miniClouds(leds);
+//FunkyLine funkyLine(leds);
+//MiniClouds miniClouds(leds);
 
 Effect* effects0[] = {
-  &snake, &soundSaturation, NULL
-//  &layoutTest, NULL
+//  &snake, &soundSaturation, NULL
+  &layoutTest, NULL
 //  &chaseTest, NULL
 //  &plainColourWhite, NULL
 //  &mandelbrot, NULL
@@ -98,59 +102,60 @@ Effect* effects0[] = {
 };
 
 Effect* effects1[] = {
-  &scintillate, NULL
+//  &scintillate, NULL
 };
 
 Effect* effects2[] = {
-  &fire00, &fire01, &fire02, &fire03, 
-  &fire04, &fire05, &fire06, &fire07,
-  &fire08, &fire09, &fire10, &fire11,
-  NULL
+//  &fire00, &fire01, &fire02, &fire03, 
+//  &fire04, &fire05, &fire06, &fire07,
+//  &fire08, &fire09, &fire10, &fire11,
+//  NULL
 };
 
 Effect* effects3[] = {
-  &perlin, NULL
+//  &perlin, NULL
 };
 
 Effect* effects4[] = {
-  &perlin, &scintillate, NULL
+//  &perlin, &scintillate, NULL
 };
 
 Effect* effects5[] = {
-  &perlin, &soundSaturation, NULL
+//  &perlin, &soundSaturation, NULL
 };
 
 Effect* effects6[] = {
-  &plasma, NULL
+//  &plasma, NULL
 };
 
 Effect* effects7[] = {
-  &plasma, &scintillate, NULL
+//  &plasma, &scintillate, NULL
 };
 
 Effect* effects8[] = {
-  &plasma, &soundSaturation, NULL
+//  &plasma, &soundSaturation, NULL
 };
 
 Effect* effects9[] = {
-  &snake, &scintillate, NULL
+//  &snake, &scintillate, NULL
 };
 
 Effect* effects10[] = {
-  &life, &soundSaturation, NULL
+//  &life, &soundSaturation, NULL
 };
 
 Effect* effects11[] = {
-  &funkyLine, &soundSaturation, NULL
+//  &funkyLine, &soundSaturation, NULL
 };
 
 Effect* effects12[] = {
-  &miniClouds, &soundSaturation, NULL
+//  &miniClouds, &soundSaturation, NULL
 };
 
 uint8_t effectGroupCount = 13;
 Effect** effectGroup[] = {
-  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects11, effects12
+  effects0
+//  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects11, effects12
 };
 
 uint8_t effectGroupIndex = 0;

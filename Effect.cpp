@@ -3,9 +3,17 @@
 
 #include "FastLED.h"
 
+#if DREAMCOAT
 #define WIDTH 36
 #define HEIGHT 20
 #define NUM_LEDS 640 // 38.4A, motherfuckers
+#endif
+
+//#if REGULAR_GRID_TOPLEFT_ORIGIN
+#define WIDTH 8
+#define HEIGHT 16
+#define NUM_LEDS 128 // 7.68A, motherfuckers
+//#endif
 
 #define SOUND_THRESHOLD 128
 
@@ -14,18 +22,22 @@ class Effect {
   protected:
     CRGB *leds;
     CRGB deadPixel;
+    
+    #ifdef DREAMCOAT
     int columnHeights[WIDTH] = {
         20, 20, 20, 20, 18, 18, 18, 14, 12, 
         12, 14, 20, 20, 20, 20, 18, 18, 18, 
         18, 18, 18, 20, 20, 20, 20, 14, 12, 
         12, 14, 18, 18, 18, 20, 20, 20, 20
     };
+    #endif
     
   public:
     Effect(CRGB *leds) : leds(leds), deadPixel(CRGB::Black) {}
     
     virtual void draw(int rawPot, int rawMic, bool button) = 0;
     
+#ifdef DREAMCOAT
     bool visible(int16_t x, int16_t y) {
       return x >= 0 && y >= 0 && x < WIDTH && y < columnHeights[x];
     }
@@ -35,7 +47,6 @@ class Effect {
     }
     
     struct CRGB& pixel(int16_t x, int16_t y) {
-
         if (visible(x, y)) {
 //            Serial.print("pixel("); Serial.print(x); Serial.print(", "); Serial.print(y); Serial.println(") - visible");
             uint16_t sum = 0;
@@ -55,6 +66,24 @@ class Effect {
             return deadPixel;
         } 
     }
+#endif
+
+//#if REGULAR_GRID_TOPLEFT_ORIGIN
+
+    int16_t maxY(int16_t x) {
+        return HEIGHT;
+    }
+
+    struct CRGB& pixel(int16_t x, int16_t y) {
+        if (x & 0x01) {
+            return leds[HEIGHT * x + HEIGHT - y - 1];
+        } else {
+            return leds[HEIGHT * x + y];
+        }
+    }
+    
+//#endif
+
     
     uint8_t normalisedPotVal(int rawPotVal) {
         uint8_t normalised = map(rawPotVal, 0, 1023, 0, 255);

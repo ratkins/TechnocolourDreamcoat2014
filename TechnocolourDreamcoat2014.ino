@@ -22,8 +22,8 @@
 //#include "RotatingCube.cpp"
 //#include "Mandelbrot.cpp"
 //#include "RandomPainter.cpp"
-//#include "FunkyLine.cpp"
-//#include "MiniClouds.cpp"
+#include "FunkyLine.cpp"
+#include "MiniClouds.cpp"
 
 #define MIC_PIN 23
 #define POT_PIN 22
@@ -50,7 +50,7 @@ PlainColour plainColourWhite(leds, CRGB::White);
 AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
 AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
 AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
-//
+
 FireEffect fire00(leds, 0, HeatColors_p);
 //FireEffect fire01(leds, 1, HeatColors_p);
 //FireEffect fire02(leds, 2, HeatColors_p);
@@ -63,95 +63,39 @@ FireEffect fire00(leds, 0, HeatColors_p);
 //FireEffect fire09(leds, 9, HeatColors_p);
 //FireEffect fire10(leds, 10, HeatColors_p);
 //FireEffect fire11(leds, 11, HeatColors_p);
-//
+
 Life life(leds);
-
 Plasma plasma(leds);
-
 Scintillate scintillate(leds);
-
 Perlin perlin(leds);
-
 Snake snake(leds);
-
 SoundSaturation soundSaturation(leds);
 
 //RotatingCube cube(leds);
-//
 //Mandelbrot mandelbrot(leds);
-
 //RandomPainter randomPainter(leds);
 
-//FunkyLine funkyLine(leds);
-//MiniClouds miniClouds(leds);
+FunkyLine funkyLine(leds);
+MiniClouds miniClouds(leds);
 
-Effect* effects0[] = { &scintillate, NULL };
-
-Effect* effects1[] = {
-//  &scintillate, NULL
-};
-
-Effect* effects2[] = {
-//  &fire00, &fire01, &fire02, &fire03, 
-//  &fire04, &fire05, &fire06, &fire07,
-//  &fire08, &fire09, &fire10, &fire11,
-//  NULL
-};
-
-Effect* effects3[] = {
-//  &perlin, NULL
-};
-
-Effect* effects4[] = {
-//  &perlin, &scintillate, NULL
-};
-
-Effect* effects5[] = {
-//  &perlin, &soundSaturation, NULL
-};
-
-Effect* effects6[] = {
-//  &plasma, NULL
-};
-
-Effect* effects7[] = {
-//  &plasma, &scintillate, NULL
-};
-
-Effect* effects8[] = {
-//  &plasma, &soundSaturation, NULL
-};
-
-Effect* effects9[] = {
-//  &snake, &scintillate, NULL
-};
-
-Effect* effects10[] = {
-//  &life, &soundSaturation, NULL
-};
-
-Effect* effects11[] = {
-//  &funkyLine, &soundSaturation, NULL
-};
-
-Effect* effects12[] = {
-//  &miniClouds, &soundSaturation, NULL
-};
-
-EffectGroup group00("Scintillate",         (Effect *[]) {&scintillate, NULL});
+EffectGroup group00("Chase Test",          (Effect *[]) {&chaseTest, NULL});
 EffectGroup group01("Layout Test",         (Effect *[]) {&layoutTest, NULL});
-EffectGroup group02("Chase Test",          (Effect *[]) {&chaseTest, NULL});
-EffectGroup group03("Power Test (Red)",    (Effect *[]) {&plainColourRed, NULL});
-EffectGroup group04("Power Test (Green)",  (Effect *[]) {&plainColourGreen, NULL});
-EffectGroup group05("Power Test (Blue)",   (Effect *[]) {&plainColourBlue, NULL});
-EffectGroup group06("Power Test (White)",  (Effect *[]) {&plainColourWhite, NULL});
+EffectGroup group02("Power Test (Red)",    (Effect *[]) {&plainColourRed, NULL});
+EffectGroup group03("Power Test (Green)",  (Effect *[]) {&plainColourGreen, NULL});
+EffectGroup group04("Power Test (Blue)",   (Effect *[]) {&plainColourBlue, NULL});
+EffectGroup group05("Power Test (White)",  (Effect *[]) {&plainColourWhite, NULL});
+
+EffectGroup group06("Scintillate",         (Effect *[]) {&scintillate, NULL});
+EffectGroup group07("Snake",               (Effect *[]) {&snake, NULL});
+EffectGroup group08("Life",                (Effect *[]) {&life, NULL});
+EffectGroup group09("Plasma",              (Effect *[]) {&plasma, NULL});
+EffectGroup group10("Perlin",              (Effect *[]) {&perlin, NULL});
 
 EffectGroup* groups[] = {
-    &group00, &group01, &group02, &group03, &group04, &group05, NULL
+    &group00, &group01, &group02, &group03, &group04, &group05, &group06, &group07, 
+    &group08, &group09, &group10,
+    NULL
 };
-
-uint8_t encoderDebounce;
-uint8_t buttonDebounce;
 
 EffectControls controls;
 
@@ -213,19 +157,19 @@ void readControls(EffectControls* controls) {
         } else {
             // advance effect
 //            Serial.print("encoderVal = "); Serial.println(encoderVal);
-            controls->encoderVal > 0 ? effectGroupIndex++ : effectGroupIndex--;
-            effectGroupIndex = effectGroupIndex == effectGroupCount ? 0 : effectGroupIndex;
-            effectGroupIndex = effectGroupIndex == 255 ? effectGroupCount - 1 : effectGroupIndex;
+//            controls->encoderVal > 0 ? effectGroupIndex++ : effectGroupIndex--;
+//            groupsIndex = groupsIndex == effectGroupCount ? 0 : groupsIndex;
+//            groupsIndex = groupsIndex == 255 ? effectGroupCount - 1 : groupsIndex;
 //            Serial.print("effectGroupIndex = "); Serial.println(effectGroupIndex);
-            effects = effectGroup[effectGroupIndex];
+//            effects = groups[groupsIndex];
 //            Serial.print("just about to increment encoderDebounce...");
             controls->encoderDebounce = 16;    
         }
         encoder.write(0);
     }
     
-    controls->potVal = analogRead(POT_PIN);
-    controls->micVal = analogRead(MIC_PIN);
+    controls->rawPot = analogRead(POT_PIN);
+    controls->rawMic = analogRead(MIC_PIN);
     
     if (buttonDebounce > 0) {
         buttonDebounce--;

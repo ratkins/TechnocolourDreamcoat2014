@@ -15,7 +15,7 @@ class AdvancingPaletteEffect : public Effect {
       palette(palette), 
       colourIndex(0) {}
     
-    virtual void draw(int rawPot, int rawMic, bool button) {
+    virtual void draw(EffectControls controls) {
       for (int i = 0; i < HEIGHT; i++) {     
         pixel(0, i) = ColorFromPalette(palette, colourIndex + i);
       }

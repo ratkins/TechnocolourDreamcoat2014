@@ -25,14 +25,14 @@ public:
         seed(96);
     }
 
-    void draw(int rawPot, int rawMic, bool button) {
+    void draw(EffectControls controls) {
         // Skip every second frame otherwise we go too fast
         if (frame++ & 0x01) {
             copyToLedsArray(currState);
             return;
         }
         
-        if (normalisedMicVal(rawMic, rawPot) > 128) {      
+        if (normalisedMicVal(controls.rawMic, controls.rawPot) > 128) {      
             seed(96);
         }
 

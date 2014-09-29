@@ -15,10 +15,10 @@ class Scintillate : public Effect {
   public:
     Scintillate(CRGB *leds) : Effect(leds), soundReactive(false), brightness(0) {}
     
-    virtual void draw(int rawPot, int rawMic, bool button) {
-        soundReactive = button ? !soundReactive : soundReactive;
+    virtual void draw(EffectControls controls) {
+        soundReactive = controls.button ? !soundReactive : soundReactive;
         
-        if (normalisedMicVal(rawMic, rawPot) > SOUND_THRESHOLD) {
+        if (normalisedMicVal(controls.rawMic, controls.rawPot) > SOUND_THRESHOLD) {
             brightness = 0;
         }
         

@@ -12,7 +12,7 @@ class ChaseTest : public Effect {
   public:
     ChaseTest(CRGB *leds) : Effect(leds), frame(0) {}
     
-    void draw(int rawPot, int rawMic, bool button) {
+    void draw(EffectControls controls) {
       leds[frame++ % NUM_LEDS] = CRGB::White;
     }
 

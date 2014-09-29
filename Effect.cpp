@@ -13,6 +13,17 @@
 
 #define SOUND_THRESHOLD 128
 
+struct EffectControls {
+    int rawPot;
+    int rawMic;
+
+    uint8_t encoderVal;
+    uint8_t encoderDebounce;
+
+    bool buttonVal;
+    uint8_t buttonDebounce;
+};
+
 class Effect {
   
   protected:
@@ -29,7 +40,7 @@ class Effect {
   public:
     Effect(CRGB *leds) : leds(leds), deadPixel(CRGB::Black) {}
     
-    virtual void draw(int rawPot, int rawMic, bool button) = 0;
+    virtual void draw(EffectControls controls) = 0;
     
 //    bool visible(int16_t x, int16_t y) {
 //      return x >= 0 && y >= 0 && x < WIDTH && y < columnHeights[x];

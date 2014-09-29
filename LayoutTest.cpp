@@ -12,7 +12,7 @@ class LayoutTest : public Effect {
   public:
     LayoutTest(CRGB *leds) : Effect(leds), frame(0) {}
     
-    virtual void draw(int rawPot, int rawMic, bool button) {
+    virtual void draw(EffectControls controls) {
 //        Serial.print("rawPotVal = "); Serial.print(rawPot); Serial.print(", normalised = "); Serial.println(normalisedPotVal(rawPot));
 //        Serial.print("rawMicVal = "); Serial.print(rawMic); Serial.print(", rawPotVal = "); Serial.print(rawPot); Serial.print(", normalised = "); Serial.println(normalisedMicVal(rawMic, rawPot));
       

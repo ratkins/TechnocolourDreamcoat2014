@@ -5,6 +5,7 @@
 #include <Encoder.h>
 
 #include "Effect.cpp"
+#include "EffectGroup.cpp"
 
 #include "LayoutTest.cpp"
 #include "ChaseTest.cpp"
@@ -40,15 +41,12 @@ Encoder encoder(ENCODER_PIN0, ENCODER_PIN1);
 
 LayoutTest layoutTest(leds);
 ChaseTest chaseTest(leds);
-PowerTest powerTestRed(leds, CRGB::Red);
-PowerTest powerTestGreen(leds, CRGB::Green);
-PowerTest powerTestBlue(leds, CRGB::Blue);
 
-//PlainColour plainColourRed(leds, CRGB::Red);
-//PlainColour plainColourGreen(leds, CRGB::Green);
-//PlainColour plainColourBlue(leds, CRGB::Blue);
-//PlainColour plainColourWhite(leds, CRGB::White);
-//
+PlainColour plainColourRed(leds, CRGB::Red);
+PlainColour plainColourGreen(leds, CRGB::Green);
+PlainColour plainColourBlue(leds, CRGB::Blue);
+PlainColour plainColourWhite(leds, CRGB::White);
+
 AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
 AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
 AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
@@ -140,25 +138,27 @@ Effect* effects12[] = {
 //  &miniClouds, &soundSaturation, NULL
 };
 
-uint8_t effectGroupCount = 13;
-Effect** effectGroup[] = {
-  effects0
-//  effects0, effects1, effects2, effects3, effects4, effects5, effects6, effects7, effects8, effects9, effects10, effects11, effects12
+EffectGroup group00("Scintillate",         (Effect *[]) {&scintillate, NULL});
+EffectGroup group01("Layout Test",         (Effect *[]) {&layoutTest, NULL});
+EffectGroup group02("Chase Test",          (Effect *[]) {&chaseTest, NULL});
+EffectGroup group03("Power Test (Red)",    (Effect *[]) {&plainColourRed, NULL});
+EffectGroup group04("Power Test (Green)",  (Effect *[]) {&plainColourGreen, NULL});
+EffectGroup group05("Power Test (Blue)",   (Effect *[]) {&plainColourBlue, NULL});
+EffectGroup group06("Power Test (White)",  (Effect *[]) {&plainColourWhite, NULL});
+
+EffectGroup* groups[] = {
+    &group00, &group01, &group02, &group03, &group04, &group05, NULL
 };
 
-uint8_t effectGroupIndex = 0;
-Effect **effects = effectGroup[0];
-
-long encoderVal;
 uint8_t encoderDebounce;
-
-int micVal;
-int potVal;
-
-bool buttonVal;
 uint8_t buttonDebounce;
 
+EffectControls controls;
+
+uint8_t groupsIndex = 0;
 uint8_t effectIndex = 0;
+
+Effect** effects;
 
 void setup() {
 //  Serial.begin(57600);
@@ -175,49 +175,15 @@ void setup() {
 
 void loop() {
     unsigned long loopStartMillis = millis();
-//    Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);        
-    encoderVal = encoder.read();
-    if (encoderDebounce > 0) {
-        encoder.write(0);
-        encoderDebounce--;
-        Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
-    }
-    if (encoderDebounce == 0 && encoderVal != 0) {
-        if (digitalRead(ENCODER_BUTTON_PIN) == LOW) {
-            // set master brightness
-//            Serial.print("Setting master brightness + "); Serial.println(constrain(FastLED.getBrightness() + encoderVal, 0, 255));
-            FastLED.setBrightness(constrain(FastLED.getBrightness() + encoderVal * 8, 0, 255));
-            encoderDebounce = 0;
-        } else {
-            // advance effect
-//            Serial.print("encoderVal = "); Serial.println(encoderVal);
-            encoderVal > 0 ? effectGroupIndex++ : effectGroupIndex--;
-            effectGroupIndex = effectGroupIndex == effectGroupCount ? 0 : effectGroupIndex;
-            effectGroupIndex = effectGroupIndex == 255 ? effectGroupCount - 1 : effectGroupIndex;
-//            Serial.print("effectGroupIndex = "); Serial.println(effectGroupIndex);
-            effects = effectGroup[effectGroupIndex];
-//            Serial.print("just about to increment encoderDebounce...");
-            encoderDebounce = 16;    
-        }
-        encoder.write(0);
-    }
-    
-    potVal = analogRead(POT_PIN);
-    micVal = analogRead(MIC_PIN);
-    
-    if (buttonDebounce > 0) {
-        buttonDebounce--;
-    }
-    if (buttonDebounce == 0 && digitalRead(ENCODER_BUTTON_PIN) == LOW) {
-        buttonVal = true;
-        buttonDebounce = 16;
-    }
-//    Serial.print("Rendering effects with button = "); Serial.println(buttonVal);
+//    Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);
+
+    readControls(&controls);
+
+    effects = groups[groupsIndex]->effects();    
     effectIndex = 0;
     while (effects[effectIndex] != NULL) {
-        effects[effectIndex++]->draw(potVal, micVal, buttonVal);
+        effects[effectIndex++]->draw(controls);
     }
-    buttonVal = false;
   //  LEDS.show();
     show_at_max_brightness_for_power();
     
@@ -228,4 +194,46 @@ void loop() {
     }  
     memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
 }
+
+void readControls(EffectControls* controls) {
+    controls->buttonVal = false;
+
+    controls->encoderVal = encoder.read();    
+    if (controls->encoderDebounce > 0) {
+        encoder.write(0);
+        controls->encoderDebounce--;
+        Serial.print("encoderDebounce = "); Serial.println(encoderDebounce);  
+    }
+    if (controls->encoderDebounce == 0 && controls->encoderVal != 0) {
+        if (digitalRead(ENCODER_BUTTON_PIN) == LOW) {
+            // set master brightness
+//            Serial.print("Setting master brightness + "); Serial.println(constrain(FastLED.getBrightness() + controls->encoderVal, 0, 255));
+            FastLED.setBrightness(constrain(FastLED.getBrightness() + controls->encoderVal * 8, 0, 255));
+            controls->encoderDebounce = 0;
+        } else {
+            // advance effect
+//            Serial.print("encoderVal = "); Serial.println(encoderVal);
+            controls->encoderVal > 0 ? effectGroupIndex++ : effectGroupIndex--;
+            effectGroupIndex = effectGroupIndex == effectGroupCount ? 0 : effectGroupIndex;
+            effectGroupIndex = effectGroupIndex == 255 ? effectGroupCount - 1 : effectGroupIndex;
+//            Serial.print("effectGroupIndex = "); Serial.println(effectGroupIndex);
+            effects = effectGroup[effectGroupIndex];
+//            Serial.print("just about to increment encoderDebounce...");
+            controls->encoderDebounce = 16;    
+        }
+        encoder.write(0);
+    }
+    
+    controls->potVal = analogRead(POT_PIN);
+    controls->micVal = analogRead(MIC_PIN);
+    
+    if (buttonDebounce > 0) {
+        buttonDebounce--;
+    }
+    if (buttonDebounce == 0 && digitalRead(ENCODER_BUTTON_PIN) == LOW) {
+        controls->buttonVal = true;
+        buttonDebounce = 16;
+    }
+}
+
 

@@ -46,7 +46,7 @@ class MiniClouds : public FunkyClouds {
         }
     }
     
-    void draw(int rawPot, int rawMic, bool button) {
+    void draw(EffectControls controls) {
         UpdateTimers();
     
         // the "seed": 3 moving dots

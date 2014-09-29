@@ -18,7 +18,7 @@ class FireEffect : public Effect {
     FireEffect(CRGB *leds, uint8_t column, CRGBPalette16 palette) : Effect(leds), column(column), palette(palette) {
     }
     
-    virtual void draw(int rawPot, int rawMic, bool button) {
+    virtual void draw(EffectControls controls) {
       random16_add_entropy(random());
 
       // Step 1.  Cool down every cell a little  
@@ -32,7 +32,7 @@ class FireEffect : public Effect {
       }
       
       // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-     if (random8() < normalisedMicVal(rawMic, rawPot)) {
+     if (random8() < normalisedMicVal(controls.rawMic, controls.rawPot)) {
        int y = random8(5);
        heat[y] = qadd8(heat[y], random8(160, 255));
      }

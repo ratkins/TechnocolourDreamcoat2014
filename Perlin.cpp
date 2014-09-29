@@ -25,7 +25,7 @@ class Perlin : public Effect {
         z = random16();
     }
     
-    virtual void draw(int rawPot, int rawMic, bool button) {
+    virtual void draw(EffectControls controls) {
         fillnoise8();
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {

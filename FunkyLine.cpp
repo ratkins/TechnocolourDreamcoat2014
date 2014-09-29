@@ -42,7 +42,7 @@ class FunkyLine : public FunkyClouds {
         }      
     }
     
-    void draw(int rawPot, int rawMic, bool button) {
+    void draw(EffectControls controls) {
         Serial.println("Updating timers...");
         // let the oscillators swing
         UpdateTimers();

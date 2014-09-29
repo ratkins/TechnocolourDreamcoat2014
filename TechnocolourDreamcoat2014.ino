@@ -2,26 +2,22 @@
 
 //#define ENCODER_DO_NOT_USE_INTERRUPTS
 
-#define REGULAR_GRID_TOPLEFT_ORIGIN 1
-//#define DREAMCOAT
-
 #include <Encoder.h>
 
 #include "Effect.cpp"
-#include "EffectGroup.cpp"
 
 #include "LayoutTest.cpp"
 #include "ChaseTest.cpp"
 #include "PowerTest.cpp"
-//#include "PlainColour.cpp"
-//#include "AdvancingPaletteEffect.cpp"
-//#include "FireEffect.cpp"
-//#include "Life.cpp"
-//#include "Plasma.cpp"
-//#include "Scintillate.cpp"
-//#include "Perlin.cpp"
-//#include "Snake.cpp"
-//#include "SoundSaturation.cpp"
+#include "PlainColour.cpp"
+#include "AdvancingPaletteEffect.cpp"
+#include "FireEffect.cpp"
+#include "Life.cpp"
+#include "Plasma.cpp"
+#include "Scintillate.cpp"
+#include "Perlin.cpp"
+#include "Snake.cpp"
+#include "SoundSaturation.cpp"
 //#include "RotatingCube.cpp"
 //#include "Mandelbrot.cpp"
 //#include "RandomPainter.cpp"
@@ -34,7 +30,7 @@
 #define ENCODER_PIN1 5
 #define ENCODER_BUTTON_PIN 2
 
-#define DATA_PIN 9
+#define DATA_PIN 1
 
 #define FRAMES_PER_SECOND 60
 
@@ -53,11 +49,11 @@ PowerTest powerTestBlue(leds, CRGB::Blue);
 //PlainColour plainColourBlue(leds, CRGB::Blue);
 //PlainColour plainColourWhite(leds, CRGB::White);
 //
-//AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
-//AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
-//AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
+AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
+AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
+AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
 //
-//FireEffect fire00(leds, 0, HeatColors_p);
+FireEffect fire00(leds, 0, HeatColors_p);
 //FireEffect fire01(leds, 1, HeatColors_p);
 //FireEffect fire02(leds, 2, HeatColors_p);
 //FireEffect fire03(leds, 3, HeatColors_p);
@@ -70,17 +66,17 @@ PowerTest powerTestBlue(leds, CRGB::Blue);
 //FireEffect fire10(leds, 10, HeatColors_p);
 //FireEffect fire11(leds, 11, HeatColors_p);
 //
-//Life life(leds);
-//
-//Plasma plasma(leds);
-//
-//Scintillate scintillate(leds);
-//
-//Perlin perlin(leds);
-//
-//Snake snake(leds);
-//
-//SoundSaturation soundSaturation(leds);
+Life life(leds);
+
+Plasma plasma(leds);
+
+Scintillate scintillate(leds);
+
+Perlin perlin(leds);
+
+Snake snake(leds);
+
+SoundSaturation soundSaturation(leds);
 
 //RotatingCube cube(leds);
 //
@@ -91,15 +87,7 @@ PowerTest powerTestBlue(leds, CRGB::Blue);
 //FunkyLine funkyLine(leds);
 //MiniClouds miniClouds(leds);
 
-Effect* effects0[] = {
-//  &snake, &soundSaturation, NULL
-  &layoutTest, NULL
-//  &chaseTest, NULL
-//  &plainColourWhite, NULL
-//  &mandelbrot, NULL
-//  &randomPainter, NULL
-//  &funkyClouds, NULL
-};
+Effect* effects0[] = { &scintillate, NULL };
 
 Effect* effects1[] = {
 //  &scintillate, NULL

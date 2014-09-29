@@ -4,7 +4,7 @@
 #include "FastLED.h"
 #include "Effect.cpp"
 
-    CRGBPalette16 palettes[] = {
+    CRGBPalette16 plasmaPalettes[] = {
         CRGBPalette16(RainbowColors_p),
         CRGBPalette16(RainbowStripeColors_p),
         CRGBPalette16(PartyColors_p),
@@ -25,12 +25,12 @@ class Plasma : public Effect {
   
   public:
     Plasma(CRGB *leds) : Effect(leds), paletteIdx(0), frame(0) {
-        palette = palettes[paletteIdx];
+        palette = plasmaPalettes[paletteIdx];
     }
     
     virtual void draw(int rawPot, int rawMic, bool button) {
         if (button) {
-            palette = palettes[++paletteIdx % paletteCount];
+            palette = plasmaPalettes[++paletteIdx % paletteCount];
             Serial.print("Set palette to "); Serial.print(paletteIdx % paletteCount);
         }
 //        palette = RainbowColors_p;

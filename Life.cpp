@@ -19,7 +19,7 @@ private:
 
 public:
 
-    Life(CRGB *leds) : Effect(leds), hue(0), frame(0) {
+    Life(CRGB *leds) : Effect(leds, "Life"), hue(0), frame(0) {
         currState = &array1;
         nextState = &array2;
         seed(96);

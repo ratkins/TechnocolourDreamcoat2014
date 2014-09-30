@@ -11,7 +11,7 @@ class AdvancingPaletteEffect : public Effect {
     CRGBPalette16 palette;
   
   public:
-    AdvancingPaletteEffect(CRGB *leds, CRGBPalette16 palette) : Effect(leds), 
+    AdvancingPaletteEffect(CRGB *leds, char *name, CRGBPalette16 palette) : Effect(leds, name), 
       palette(palette), 
       colourIndex(0) {}
     

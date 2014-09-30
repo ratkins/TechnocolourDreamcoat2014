@@ -10,7 +10,7 @@ class ChaseTest : public Effect {
     int frame;
   
   public:
-    ChaseTest(CRGB *leds) : Effect(leds), frame(0) {}
+    ChaseTest(CRGB *leds) : Effect(leds, "Chase Test"), frame(0) {}
     
     void draw(EffectControls controls) {
       leds[frame++ % NUM_LEDS] = CRGB::White;

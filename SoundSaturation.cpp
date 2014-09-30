@@ -10,7 +10,7 @@ class SoundSaturation : public Effect {
     uint8_t brightness;
   
   public:
-    SoundSaturation(CRGB *leds) : Effect(leds), brightness(0) {}
+    SoundSaturation(CRGB *leds) : Effect(leds, "Sound Saturation"), brightness(0) {}
     
     virtual void draw(EffectControls controls) {
         if (normalisedMicVal(controls.rawMic, controls.rawPot) > SOUND_THRESHOLD) {

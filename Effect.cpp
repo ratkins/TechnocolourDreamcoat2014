@@ -28,6 +28,7 @@ class Effect {
   
   protected:
     CRGB *leds;
+    char *_name;
     CRGB deadPixel;
     
 //    int columnHeights[WIDTH] = {
@@ -38,8 +39,12 @@ class Effect {
 //    };
     
   public:
-    Effect(CRGB *leds) : leds(leds), deadPixel(CRGB::Black) {}
+    Effect(CRGB *leds, char* name) : leds(leds), _name(name), deadPixel(CRGB::Black) {}
     
+    char* name() {
+        return _name;
+    }
+
     virtual void draw(EffectControls controls) = 0;
     
 //    bool visible(int16_t x, int16_t y) {

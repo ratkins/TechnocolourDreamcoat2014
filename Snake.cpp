@@ -50,7 +50,7 @@ class Snake : public Effect {
     }
   
   public:
-    Snake(CRGB *leds) : Effect(leds), initialHue(0) {}
+    Snake(CRGB *leds) : Effect(leds, "Snake"), initialHue(0) {}
     
     virtual void draw(EffectControls controls) {
         shuffleDown();

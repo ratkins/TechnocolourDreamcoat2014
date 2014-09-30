@@ -13,7 +13,7 @@ class Scintillate : public Effect {
     uint8_t brightness;
     
   public:
-    Scintillate(CRGB *leds) : Effect(leds), soundReactive(false), brightness(0) {}
+    Scintillate(CRGB *leds) : Effect(leds, "Scintillate"), soundReactive(false), brightness(0) {}
     
     virtual void draw(EffectControls controls) {
         soundReactive = controls.buttonVal ? !soundReactive : soundReactive;

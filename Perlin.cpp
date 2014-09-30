@@ -19,7 +19,7 @@ class Perlin : public Effect {
     uint8_t noise[MAX_DIMENSION][MAX_DIMENSION];
   
   public:
-    Perlin(CRGB *leds) : Effect(leds), hue(0), speed(16), scale(30) {
+    Perlin(CRGB *leds) : Effect(leds, "Perlin"), hue(0), speed(16), scale(30) {
         x = random16();
         y = random16();
         z = random16();

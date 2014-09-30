@@ -10,7 +10,7 @@ class PowerTest : public Effect {
     CRGB colour;
   
   public:
-    PowerTest(CRGB *leds, CRGB colour) : Effect(leds), colour(colour) {}
+    PowerTest(CRGB *leds, CRGB colour) : Effect(leds, "Power Test"), colour(colour) {}
     
     virtual void draw(int rawPot, int rawMic, bool button) {
         int ledsIdx = 0;

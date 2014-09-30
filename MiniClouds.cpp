@@ -11,7 +11,7 @@ class MiniClouds : public FunkyClouds {
       timer multiTimer[7];
   
   public:
-        MiniClouds(CRGB *leds) : FunkyClouds(leds, multiTimer, 7) {
+        MiniClouds(CRGB *leds) : FunkyClouds(leds, "Mini Clouds", multiTimer, 7) {
         multiTimer[0].tact = 55;     //x1
         multiTimer[0].up = WIDTH - 1;
         multiTimer[0].down = 0;

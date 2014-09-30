@@ -11,7 +11,7 @@ class FunkyLine : public FunkyClouds {
     timer multiTimer[5];
   
   public:
-    FunkyLine(CRGB *leds) : FunkyClouds(leds, multiTimer, 5) {
+    FunkyLine(CRGB *leds) : FunkyClouds(leds, "Funky Line", multiTimer, 5) {
         multiTimer[0].tact = 32;     //x1
         multiTimer[0].up = WIDTH - 1;
         multiTimer[0].down = 0;

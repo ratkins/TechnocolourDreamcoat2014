@@ -22,7 +22,7 @@ class FunkyClouds : public Effect {
           int timers;
           timer *multiTimer;
     
-          FunkyClouds(CRGB *leds, timer multiTimer[], int timers) : Effect(leds), multiTimer(multiTimer), timers(timers) {}
+          FunkyClouds(CRGB *leds, char *name, timer multiTimer[], int timers) : Effect(leds, name), multiTimer(multiTimer), timers(timers) {}
       
           // counts everything with different speeds linear up and down
           // = oscillators following a triangular function

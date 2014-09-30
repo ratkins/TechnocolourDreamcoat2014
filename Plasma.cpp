@@ -11,7 +11,7 @@ class Plasma : public Effect {
     CRGBPalette16 palette;
     
   public:
-    Plasma(CRGB *leds) : Effect(leds), frame(0) {
+    Plasma(CRGB *leds) : Effect(leds, "Plasma"), frame(0) {
     }
     
     virtual void draw(EffectControls controls) {

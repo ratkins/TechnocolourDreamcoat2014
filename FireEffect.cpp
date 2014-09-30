@@ -15,7 +15,7 @@ class FireEffect : public Effect {
     uint8_t heat[HEIGHT];
   
   public:
-    FireEffect(CRGB *leds, uint8_t column, CRGBPalette16 palette) : Effect(leds), column(column), palette(palette) {
+    FireEffect(CRGB *leds, uint8_t column, CRGBPalette16 palette) : Effect(leds, "Fire 2012"), column(column), palette(palette) {
     }
     
     virtual void draw(EffectControls controls) {

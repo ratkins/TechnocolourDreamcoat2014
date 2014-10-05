@@ -67,11 +67,11 @@ PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 //FireEffect fire10(leds, 10, HeatColors_p);
 //FireEffect fire11(leds, 11, HeatColors_p);
 //
-Life life(leds);
-Plasma plasma(leds);
+//Life life(leds);
+//Plasma plasma(leds);
 Scintillate scintillate(leds);
-Perlin perlin(leds);
-Snake snake(leds);
+//Perlin perlin(leds);
+//Snake snake(leds);
 //SoundSaturation soundSaturation(leds);
 //
 //RotatingCube cube(leds);
@@ -83,8 +83,8 @@ Snake snake(leds);
 
 
 Effect* effects[] = {
-    &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite,
-    &life, &plasma, &scintillate, &perlin, &snake,
+    &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate,
+//    &life, &plasma, &perlin, &snake,
     NULL
 };
 
@@ -111,18 +111,28 @@ void setup() {
 
 void loop() {
     Serial.println("loop()...");
-    if (ble_connected()) {
-        Serial.println("BTLE Connected!");
-        // do stuff like send list of effects
-        while (1) {
-            writeLEDFrames();
-        }
-    } else {
-        Serial.println("BTLE not connected...");
-        
-    }
-    delay(1000);
-    ble_do_events();
+//    if (ble_connected()) {
+//        Serial.println("BTLE Connected!");
+//        while (effects[effectIndex] != NULL) {
+//            char *effectName = effects[effectIndex++]->name();
+//            int effectNameIndex = 0;
+//            while (effectName[effectNameIndex] != NULL) {
+//                ble_write(effectName[effectNameIndex++]);
+//            }
+//            ble_write('\0');
+//        }
+//        ble_write('\0');
+//        while (1) {
+//            writeLEDFrames();
+//            ble_do_events();            
+//        }
+//    } else {
+//        Serial.println("BTLE not connected...");
+//        
+//    }
+//    delay(1000);
+//    ble_do_events();
+  writeLEDFrames();
 }
 
 void writeLEDFrames() {
@@ -131,7 +141,7 @@ void writeLEDFrames() {
 
     readControls(&controls);
 
-    Effect *effect = effects[9];
+    Effect *effect = effects[6];
     
     Serial.print("effect.name(): "); Serial.println(effect->name());
     

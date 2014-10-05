@@ -1,11 +1,14 @@
 #include <FastLED.h>
 
+#include <SPI.h>
+#include <boards.h>
+#include <RBL_nRF8001.h>
+
 //#define ENCODER_DO_NOT_USE_INTERRUPTS
 
 #include <Encoder.h>
 
 #include "Effect.cpp"
-#include "EffectGroup.cpp"
 
 #include "LayoutTest.cpp"
 #include "ChaseTest.cpp"
@@ -13,11 +16,11 @@
 #include "PlainColour.cpp"
 //#include "AdvancingPaletteEffect.cpp"
 //#include "FireEffect.cpp"
-//#include "Life.cpp"
-//#include "Plasma.cpp"
-//#include "Scintillate.cpp"
-//#include "Perlin.cpp"
-//#include "Snake.cpp"
+#include "Life.cpp"
+#include "Plasma.cpp"
+#include "Scintillate.cpp"
+#include "Perlin.cpp"
+#include "Snake.cpp"
 //#include "SoundSaturation.cpp"
 //#include "RotatingCube.cpp"
 //#include "Mandelbrot.cpp"
@@ -64,11 +67,11 @@ PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 //FireEffect fire10(leds, 10, HeatColors_p);
 //FireEffect fire11(leds, 11, HeatColors_p);
 //
-//Life life(leds);
-//Plasma plasma(leds);
-//Scintillate scintillate(leds);
-//Perlin perlin(leds);
-//Snake snake(leds);
+Life life(leds);
+Plasma plasma(leds);
+Scintillate scintillate(leds);
+Perlin perlin(leds);
+Snake snake(leds);
 //SoundSaturation soundSaturation(leds);
 //
 //RotatingCube cube(leds);
@@ -81,6 +84,7 @@ PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 
 Effect* effects[] = {
     &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite,
+    &life, &plasma, &scintillate, &perlin, &snake,
     NULL
 };
 
@@ -99,16 +103,35 @@ void setup() {
   set_max_power_indicator_LED(13);
   set_max_power_in_milliwatts(80000);
   
+  ble_set_name("16x9 LED Panel");
+  ble_begin();
+  
   delay(2000);  
 }
 
 void loop() {
+    Serial.println("loop()...");
+    if (ble_connected()) {
+        Serial.println("BTLE Connected!");
+        // do stuff like send list of effects
+        while (1) {
+            writeLEDFrames();
+        }
+    } else {
+        Serial.println("BTLE not connected...");
+        
+    }
+    delay(1000);
+    ble_do_events();
+}
+
+void writeLEDFrames() {
     unsigned long loopStartMillis = millis();
     Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);
 
     readControls(&controls);
 
-    Effect *effect = effects[1];
+    Effect *effect = effects[9];
     
     Serial.print("effect.name(): "); Serial.println(effect->name());
     
@@ -127,7 +150,7 @@ void loop() {
         LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
 //        delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
     }  
-    memset8(leds, 0, NUM_LEDS * sizeof(CRGB));
+    memset8(leds, 0, NUM_LEDS * sizeof(CRGB));  
 }
 
 void readControls(EffectControls* controls) {

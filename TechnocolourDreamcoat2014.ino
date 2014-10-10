@@ -55,7 +55,7 @@ PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 //FireEffect fire10(leds, 10, HeatColors_p);
 //FireEffect fire11(leds, 11, HeatColors_p);
 //
-//Life life(leds);
+Life life(leds);
 Plasma plasma(leds);
 Scintillate scintillate(leds);
 Perlin perlin(leds);
@@ -72,7 +72,7 @@ Snake snake(leds);
 
 Effect* effects[] = {
     &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
-//    &life,
+    &life,
     NULL
 };
 

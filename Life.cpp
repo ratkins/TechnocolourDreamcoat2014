@@ -4,6 +4,8 @@
 #import "Effect.cpp"
 #import "FastLED.h"
 
+#define DENSITY 80
+
 class Life : public Effect {
     
 private:
@@ -22,7 +24,7 @@ public:
     Life(CRGB *leds) : Effect(leds, "Life"), hue(0), frame(0) {
         currState = &array1;
         nextState = &array2;
-        seed(WIDTH * HEIGHT / 20);
+        seed(DENSITY);
     }
 
     void draw(EffectControls controls) {

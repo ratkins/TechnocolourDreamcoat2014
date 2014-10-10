@@ -7,7 +7,7 @@
 #include "PowerTest.cpp"
 #include "PlainColour.cpp"
 //#include "AdvancingPaletteEffect.cpp"
-//#include "FireEffect.cpp"
+#include "FireEffect.cpp"
 #include "Life.cpp"
 #include "Plasma.cpp"
 #include "Scintillate.cpp"
@@ -41,25 +41,14 @@ PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 //AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
 //AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
 //AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
-//
-//FireEffect fire00(leds, 0, HeatColors_p);
-//FireEffect fire01(leds, 1, HeatColors_p);
-//FireEffect fire02(leds, 2, HeatColors_p);
-//FireEffect fire03(leds, 3, HeatColors_p);
-//FireEffect fire04(leds, 4, HeatColors_p);
-//FireEffect fire05(leds, 5, HeatColors_p);
-//FireEffect fire06(leds, 6, HeatColors_p);
-//FireEffect fire07(leds, 7, HeatColors_p);
-//FireEffect fire08(leds, 8, HeatColors_p);
-//FireEffect fire09(leds, 9, HeatColors_p);
-//FireEffect fire10(leds, 10, HeatColors_p);
-//FireEffect fire11(leds, 11, HeatColors_p);
-//
+
+FireEffect fire(leds, HeatColors_p);
 Life life(leds);
 Plasma plasma(leds);
 Scintillate scintillate(leds);
 Perlin perlin(leds);
 Snake snake(leds);
+
 //SoundSaturation soundSaturation(leds);
 //
 //RotatingCube cube(leds);
@@ -72,7 +61,7 @@ Snake snake(leds);
 
 Effect* effects[] = {
     &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
-    &life,
+    &life, &fire,
     NULL
 };
 

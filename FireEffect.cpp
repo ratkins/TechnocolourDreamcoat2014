@@ -12,42 +12,42 @@ class FireEffect : public Effect {
   private:
     uint8_t column;
     CRGBPalette16 palette;
-    uint8_t heat[HEIGHT];
+    uint8_t heats[WIDTH][HEIGHT];
   
   public:
-    FireEffect(CRGB *leds, uint8_t column, CRGBPalette16 palette) : Effect(leds, "Fire 2012"), column(column), palette(palette) {
+    FireEffect(CRGB *leds, CRGBPalette16 palette) : Effect(leds, "Fire 2012"), column(column), palette(palette) {
     }
     
     virtual void draw(EffectControls controls) {
-      random16_add_entropy(random());
-
-      // Step 1.  Cool down every cell a little  
-      for (int i = 0; i < HEIGHT; i++) {
-        heat[i] = qsub8(heat[i], random8(0, ((COOLING * 10) / HEIGHT) + 2));
-      }
-  
-      // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-      for (int k = HEIGHT - 1; k > 1; k--) {
-        heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
-      }
+        for (int columnIdx = 0; columnIdx < WIDTH; columnIdx++) {
+        
+            random16_add_entropy(random());
+            
+            // Step 1.  Cool down every cell a little  
+            for (int i = 0; i < HEIGHT; i++) {
+                heats[columnIdx][i] = qsub8(heats[columnIdx][i], random8(0, ((COOLING * 10) / HEIGHT) + 2));
+            }
+        
+            // Step 2.  Heat from each cell drifts 'up' and diffuses a little
+            for (int k = HEIGHT - 1; k > 1; k--) {
+                heats[columnIdx][k] = (heats[columnIdx][k - 1] + heats[columnIdx][k - 2] + heats[columnIdx][k - 2] ) / 3;
+            }
+            
+            // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
+            if (random8() < normalisedMicVal(controls.rawMic, controls.rawPot)) {
+                int y = random8(5);
+                heats[columnIdx][y] = qadd8(heats[columnIdx][y], random8(160, 255));
+            }
       
-      // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-     if (random8() < normalisedMicVal(controls.rawMic, controls.rawPot)) {
-       int y = random8(5);
-       heat[y] = qadd8(heat[y], random8(160, 255));
-     }
-
-     // Step 4.  Map from heat cells to LED colors
-     for(int j = 0; j < HEIGHT; j++) {
-      // Scale the heat value from 0-255 down to 0-240
-      // for best results with color palettes.
-       byte colorindex = scale8(heat[j], 240);
-       pixel(column, j) = ColorFromPalette(palette, colorindex);
-       pixel(column + 12, j) = ColorFromPalette(palette, colorindex);       
-       pixel(column + 24, j) = ColorFromPalette(palette, colorindex);              
-     }
-   }
-
+            // Step 4.  Map from heat cells to LED colors
+            for (int j = 0; j < HEIGHT; j++) {
+                // Scale the heat value from 0-255 down to 0-240
+                // for best results with color palettes.
+                byte colorindex = scale8(heats[columnIdx][j], 240);
+                pixel(columnIdx, j) = ColorFromPalette(palette, colorindex);
+            }
+        }
+    }
 };
 
 #endif

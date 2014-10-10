@@ -1,13 +1,5 @@
 #include <FastLED.h>
 
-#include <SPI.h>
-#include <boards.h>
-#include <RBL_nRF8001.h>
-
-//#define ENCODER_DO_NOT_USE_INTERRUPTS
-
-#include <Encoder.h>
-
 #include "Effect.cpp"
 
 #include "LayoutTest.cpp"
@@ -28,19 +20,15 @@
 //#include "FunkyLine.cpp"
 //#include "MiniClouds.cpp"
 
-#define MIC_PIN 23
-#define POT_PIN 22
-#define ENCODER_PIN0 4
-#define ENCODER_PIN1 5
-#define ENCODER_BUTTON_PIN 2
-
 #define DATA_PIN 1
+#define PROG_UP_PIN 2
+#define PROG_DOWN_PIN 3
+#define BRIGHTNESS_PIN 21 // A7
 
 #define FRAMES_PER_SECOND 60
+#define DEBOUNCE_COUNT 16
 
 CRGB leds[NUM_LEDS];
-
-Encoder encoder(ENCODER_PIN0, ENCODER_PIN1);
 
 LayoutTest layoutTest(leds);
 ChaseTest chaseTest(leds);
@@ -68,10 +56,10 @@ PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 //FireEffect fire11(leds, 11, HeatColors_p);
 //
 //Life life(leds);
-//Plasma plasma(leds);
+Plasma plasma(leds);
 Scintillate scintillate(leds);
-//Perlin perlin(leds);
-//Snake snake(leds);
+Perlin perlin(leds);
+Snake snake(leds);
 //SoundSaturation soundSaturation(leds);
 //
 //RotatingCube cube(leds);
@@ -83,75 +71,59 @@ Scintillate scintillate(leds);
 
 
 Effect* effects[] = {
-    &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate,
-//    &life, &plasma, &perlin, &snake,
+    &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
+//    &life,
     NULL
 };
 
 EffectControls controls;
 
 uint8_t effectIndex = 0;
+uint8_t effectCount = 0;
 
 void setup() {
   Serial.begin(115200);
  
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
   
-  pinMode(ENCODER_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(PROG_UP_PIN, INPUT_PULLUP);
+  pinMode(PROG_DOWN_PIN, INPUT_PULLUP);  
   pinMode(13, OUTPUT);
 
   set_max_power_indicator_LED(13);
   set_max_power_in_milliwatts(80000);
   
-  ble_set_name("16x9 LED Panel");
-  ble_begin();
-  
+  while (effects[effectIndex++] != NULL) {
+      effectCount++;
+  }
+  effectIndex = 0;
+
   delay(2000);  
 }
 
 void loop() {
-    Serial.println("loop()...");
-//    if (ble_connected()) {
-//        Serial.println("BTLE Connected!");
-//        while (effects[effectIndex] != NULL) {
-//            char *effectName = effects[effectIndex++]->name();
-//            int effectNameIndex = 0;
-//            while (effectName[effectNameIndex] != NULL) {
-//                ble_write(effectName[effectNameIndex++]);
-//            }
-//            ble_write('\0');
-//        }
-//        ble_write('\0');
-//        while (1) {
-//            writeLEDFrames();
-//            ble_do_events();            
-//        }
-//    } else {
-//        Serial.println("BTLE not connected...");
-//        
-//    }
-//    delay(1000);
-//    ble_do_events();
-  writeLEDFrames();
-}
-
-void writeLEDFrames() {
     unsigned long loopStartMillis = millis();
-    Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);
+//    Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);
+//    Serial.print("effectCount = "); Serial.println(effectCount);
 
     readControls(&controls);
-
-    Effect *effect = effects[6];
+//    Serial.print("controls.progUp = "); Serial.print(controls.progUp); Serial.print(", controls.progDown = "); Serial.print(controls.progDown); Serial.print(", controls.brightness = "); Serial.println(controls.brightness);
+    if (controls.progUp && controls.progDown) {
+        // special mode?
+    } else if (controls.progUp) {
+        effectIndex = effectIndex == effectCount - 1 ? 0 : effectIndex + 1;
+    } else if (controls.progDown) {
+        effectIndex = effectIndex == 0 ? effectCount - 1 : effectIndex - 1;
+    }
+    Serial.print("effectIndex: "); Serial.println(effectIndex);    
+    Effect *effect = effects[effectIndex];
     
-    Serial.print("effect.name(): "); Serial.println(effect->name());
+    FastLED.setBrightness(controls.brightness);
+    
+//    Serial.print("effect.name(): "); Serial.println(effect->name());
     
     effect->draw(controls);
 
-//    (effects[0])->draw(controls);
-//    effectIndex = 0;
-//    while (effects[effectIndex] != NULL) {
-//        effects[effectIndex++]->draw(controls);
-//    }
     LEDS.show();
 //    show_at_max_brightness_for_power();
     
@@ -164,44 +136,25 @@ void writeLEDFrames() {
 }
 
 void readControls(EffectControls* controls) {
-    controls->buttonVal = false;
-
-    controls->encoderVal = encoder.read();    
-    if (controls->encoderDebounce > 0) {
-        encoder.write(0);
-        controls->encoderDebounce--;
-        Serial.print("encoderDebounce = "); Serial.println(controls->encoderDebounce);  
-    }
-    if (controls->encoderDebounce == 0 && controls->encoderVal != 0) {
-        if (digitalRead(ENCODER_BUTTON_PIN) == LOW) {
-            // set master brightness
-//            Serial.print("Setting master brightness + "); Serial.println(constrain(FastLED.getBrightness() + controls->encoderVal, 0, 255));
-            FastLED.setBrightness(constrain(FastLED.getBrightness() + controls->encoderVal * 8, 0, 255));
-            controls->encoderDebounce = 0;
-        } else {
-            // advance effect
-//            Serial.print("encoderVal = "); Serial.println(encoderVal);
-//            controls->encoderVal > 0 ? effectGroupIndex++ : effectGroupIndex--;
-//            groupsIndex = groupsIndex == effectGroupCount ? 0 : groupsIndex;
-//            groupsIndex = groupsIndex == 255 ? effectGroupCount - 1 : groupsIndex;
-//            Serial.print("effectGroupIndex = "); Serial.println(effectGroupIndex);
-//            effects = groups[groupsIndex];
-//            Serial.print("just about to increment encoderDebounce...");
-            controls->encoderDebounce = 16;    
-        }
-        encoder.write(0);
+    if (controls->progUpDebounce == 0 && digitalRead(PROG_UP_PIN) == LOW) {
+        Serial.println("progUpDebounce");
+        controls->progUpDebounce = DEBOUNCE_COUNT;      
+        controls->progUp = true;
+    } else if (controls->progUpDebounce > 0) {
+        controls->progUpDebounce--;
+        controls->progUp = false;
     }
     
-    controls->rawPot = analogRead(POT_PIN);
-    controls->rawMic = analogRead(MIC_PIN);
+    if (controls->progDownDebounce == 0 && digitalRead(PROG_DOWN_PIN) == LOW) {
+        Serial.println("progDownDebounce");      
+        controls->progDownDebounce = DEBOUNCE_COUNT;
+        controls->progDown = true;
+    } else if (controls->progDownDebounce > 0) {
+        controls->progDownDebounce--;
+        controls->progDown = false;        
+    }
     
-    if (controls->buttonDebounce > 0) {
-        controls->buttonDebounce--;
-    }
-    if (controls->buttonDebounce == 0 && digitalRead(ENCODER_BUTTON_PIN) == LOW) {
-        controls->buttonVal = true;
-        controls->buttonDebounce = 16;
-    }
+    controls->brightness =  map(analogRead(BRIGHTNESS_PIN), 0, 1023, 0, 255);
 }
 
 

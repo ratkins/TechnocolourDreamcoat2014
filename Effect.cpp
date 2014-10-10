@@ -14,14 +14,16 @@
 #define SOUND_THRESHOLD 128
 
 struct EffectControls {
-    int rawPot;
+    uint8_t brightness;
+
+    bool progUp;
+    uint8_t progUpDebounce;
+    
+    bool progDown;
+    uint8_t progDownDebounce;
+    
     int rawMic;
-
-    uint8_t encoderVal;
-    uint8_t encoderDebounce;
-
-    bool buttonVal;
-    uint8_t buttonDebounce;
+    int rawPot;
 };
 
 class Effect {

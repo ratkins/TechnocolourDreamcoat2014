@@ -15,7 +15,6 @@ class LayoutTest : public Effect {
     virtual void draw(EffectControls controls) {
 //        Serial.print("rawPotVal = "); Serial.print(rawPot); Serial.print(", normalised = "); Serial.println(normalisedPotVal(rawPot));
 //        Serial.print("rawMicVal = "); Serial.print(rawMic); Serial.print(", rawPotVal = "); Serial.print(rawPot); Serial.print(", normalised = "); Serial.println(normalisedMicVal(rawMic, rawPot));
-        Serial.println("LayoutTest::draw()");
         uint8_t hue = 0;
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {

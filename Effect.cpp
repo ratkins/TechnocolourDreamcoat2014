@@ -15,12 +15,17 @@
 
 struct EffectControls {
     uint8_t brightness;
+    uint8_t volume;
+    uint8_t optionPot;
 
     bool progUp;
     uint8_t progUpDebounce;
     
     bool progDown;
     uint8_t progDownDebounce;
+    
+    bool optionButton;
+    uint8_t optionButtonDebounce;
     
     int rawMic;
     int rawPot;

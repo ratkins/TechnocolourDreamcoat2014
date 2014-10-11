@@ -34,7 +34,7 @@ class FireEffect : public Effect {
             }
             
             // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-            if (random8() < normalisedMicVal(controls.rawMic, controls.rawPot)) {
+            if (random8() < 120/*normalisedMicVal(controls.rawMic, controls.rawPot)*/) {
                 int y = random8(5);
                 heats[columnIdx][y] = qadd8(heats[columnIdx][y], random8(160, 255));
             }

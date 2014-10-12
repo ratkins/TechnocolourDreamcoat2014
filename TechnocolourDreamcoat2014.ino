@@ -28,7 +28,8 @@
 #define BRIGHTNESS_PIN 21 // A7
 #define VOLUME_PIN 20 // A6
 #define OPTION_POT_PIN 19 // A5
-#define FRAMES_PER_SECOND 30
+
+#define FRAMES_PER_SECOND 60
 #define DEBOUNCE_COUNT 16
 
 CRGB leds[NUM_LEDS];
@@ -100,12 +101,12 @@ void loop() {
 //    Serial.print("effectCount = "); Serial.println(effectCount);
 
     readControls(&controls);
-    Serial.print("controls.progUp = "); Serial.print(controls.progUp); 
-      Serial.print(", controls.progDown = "); Serial.print(controls.progDown); 
-      Serial.print(", controls.optionButton = "); Serial.print(controls.optionButton); 
-      Serial.print(", controls.brightness = "); Serial.print(controls.brightness);
-      Serial.print(", controls.optionPot = "); Serial.print(controls.optionPot);      
-      Serial.print(", controls.volume = "); Serial.println(controls.volume);
+//    Serial.print("controls.progUp = "); Serial.print(controls.progUp); 
+//      Serial.print(", controls.progDown = "); Serial.print(controls.progDown); 
+//      Serial.print(", controls.optionButton = "); Serial.print(controls.optionButton); 
+//      Serial.print(", controls.brightness = "); Serial.print(controls.brightness);
+//      Serial.print(", controls.optionPot = "); Serial.print(controls.optionPot);      
+//      Serial.print(", controls.volume = "); Serial.println(controls.volume);
       
     if (controls.progUp && controls.progDown) {
         // special mode?

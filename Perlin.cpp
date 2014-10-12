@@ -11,7 +11,8 @@ class Perlin : public Effect {
   private:
     uint8_t hue;
     uint16_t speed;
-    uint16_t scale;    
+    uint16_t scale;
+    uint16_t volumeScale;
     uint16_t x;
     uint16_t y;
     uint16_t z;
@@ -24,7 +25,15 @@ class Perlin : public Effect {
     uint8_t paletteCount;
     
   public:
-    Perlin(CRGB *leds) : Effect(leds, "Perlin"), hue(0), speed(16), scale(30), currentPalette(PartyColors_p), colorLoop(1), paletteIndex(0), paletteCount(12) {
+    Perlin(CRGB *leds) : Effect(leds, "Perlin"), 
+            hue(0), 
+            speed(16), 
+            scale(30), 
+            volumeScale(0), 
+            currentPalette(PartyColors_p), 
+            colorLoop(1), 
+            paletteIndex(0), 
+            paletteCount(12) {
         x = random16();
         y = random16();
         z = random16();
@@ -34,6 +43,16 @@ class Perlin : public Effect {
         if (controls.optionButton) {
             ChangePalette();
         }
+//        if (controls.volume > controls.optionPot && volumeScale == 0) {
+//            Serial.print("Beat detected... ");
+//            volumeScale = 8;
+//        }
+//        if (volumeScale > 0) {
+//            volumeScale--;
+//        }
+        scale = controls.optionPot;
+        Serial.print("scale  = "); Serial.println(controls.optionPot);
+        
         fillnoise8();
         mapNoiseToLEDsUsingPalette();
     }
@@ -48,9 +67,9 @@ class Perlin : public Effect {
         }
       
         for (int i = 0; i < MAX_DIMENSION; i++) {
-            int ioffset = scale * i;
+            int ioffset = (scale + volumeScale) * i;
             for (int j = 0; j < MAX_DIMENSION; j++) {
-                int joffset = scale * j;
+                int joffset = (scale + volumeScale) * j;
                 
                 byte data = inoise8(x + ioffset, y + joffset, z);
           
@@ -110,100 +129,100 @@ class Perlin : public Effect {
     
     void ChangePalette() {
         switch (paletteIndex++ % paletteCount) {
-//            case 0: 
-//              currentPalette = RainbowColors_p; speed = 20; scale = 30; colorLoop = 1;
-//              break;
-//              
-//            case 1:
-//              SetupPurpleAndGreenPalette(); speed = 10; scale = 50; colorLoop = 1;
-//              break;
-//              
-//            case 2:
-//              SetupBlackAndWhiteStripedPalette(); speed = 20; scale = 30; colorLoop = 1;
-//              break;
-//              
-//            case 3:
-//              currentPalette = ForestColors_p; speed =  8; scale =120; colorLoop = 0;
-//              break;
-//              
-//            case 4:
-//              currentPalette = CloudColors_p; speed =  4; scale = 30; colorLoop = 0;
-//              break;
-//              
-//            case 5:
-//              currentPalette = LavaColors_p; speed =  8; scale = 50; colorLoop = 0;
-//              break;
-//              
-//            case 6:
-//              currentPalette = OceanColors_p; speed = 20; scale = 90; colorLoop = 0;
-//              break;
-//              
-//            case 7:
-//              currentPalette = PartyColors_p; speed = 20; scale = 30; colorLoop = 1;
-//              break;
-//              
-//            case 8:
-//              SetupRandomPalette(); speed = 20; scale = 20; colorLoop = 1;
-//              break;
-//              
-//            case 9:
-//              SetupRandomPalette(); speed = 50; scale = 50; colorLoop = 1;
-//              break;
-//              
-//            case 10:
-//              SetupRandomPalette(); speed = 90; scale = 90; colorLoop = 1;
-//              break;
-//              
-//            case 11:
-//              currentPalette = RainbowStripeColors_p; speed = 30; scale = 20; colorLoop = 1;
-//              break;
+            case 0: 
+              currentPalette = RainbowColors_p; speed = 20; scale = 30; colorLoop = 1;
+              break;
+              
+            case 1:
+              SetupPurpleAndGreenPalette(); speed = 10; scale = 50; colorLoop = 1;
+              break;
+              
+            case 2:
+              SetupBlackAndWhiteStripedPalette(); speed = 20; scale = 30; colorLoop = 1;
+              break;
+              
+            case 3:
+              currentPalette = ForestColors_p; speed =  8; scale =120; colorLoop = 0;
+              break;
+              
+            case 4:
+              currentPalette = CloudColors_p; speed =  4; scale = 30; colorLoop = 0;
+              break;
+              
+            case 5:
+              currentPalette = LavaColors_p; speed =  8; scale = 50; colorLoop = 0;
+              break;
+              
+            case 6:
+              currentPalette = OceanColors_p; speed = 20; scale = 90; colorLoop = 0;
+              break;
+              
+            case 7:
+              currentPalette = PartyColors_p; speed = 20; scale = 30; colorLoop = 1;
+              break;
+              
+            case 8:
+              SetupRandomPalette(); speed = 20; scale = 20; colorLoop = 1;
+              break;
+              
+            case 9:
+              SetupRandomPalette(); speed = 50; scale = 50; colorLoop = 1;
+              break;
+              
+            case 10:
+              SetupRandomPalette(); speed = 90; scale = 90; colorLoop = 1;
+              break;
+              
+            case 11:
+              currentPalette = RainbowStripeColors_p; speed = 30; scale = 20; colorLoop = 1;
+              break;
         }
     }
 
+    // This function generates a random palette that's a gradient
+    // between four different colors.  The first is a dim hue, the second is 
+    // a bright hue, the third is a bright pastel, and the last is 
+    // another bright hue.  This gives some visual bright/dark variation
+    // which is more interesting than just a gradient of different hues.
+    void SetupRandomPalette()
+    {
+      currentPalette = CRGBPalette16( 
+                          CHSV( random8(), 255, 32), 
+                          CHSV( random8(), 255, 255), 
+                          CHSV( random8(), 128, 255), 
+                          CHSV( random8(), 255, 255)); 
+    }
+    
+    // This function sets up a palette of black and white stripes,
+    // using code.  Since the palette is effectively an array of
+    // sixteen CRGB colors, the various fill_* functions can be used
+    // to set them up.
+    void SetupBlackAndWhiteStripedPalette()
+    {
+      // 'black out' all 16 palette entries...
+      fill_solid(currentPalette, 16, CRGB::Black);
+      // and set every fourth one to white.
+      currentPalette[0] = CRGB::White;
+      currentPalette[4] = CRGB::White;
+      currentPalette[8] = CRGB::White;
+      currentPalette[12] = CRGB::White;
+    }
+    
+    // This function sets up a palette of purple and green stripes.
+    void SetupPurpleAndGreenPalette()
+    {
+      CRGB purple = CHSV( HUE_PURPLE, 255, 255);
+      CRGB green  = CHSV( HUE_GREEN, 255, 255);
+      CRGB black  = CRGB::Black;
+      
+      currentPalette = CRGBPalette16( 
+        green,  green,  black,  black,
+        purple, purple, black,  black,
+        green,  green,  black,  black,
+        purple, purple, black,  black );
+    }
+
 };
-
-// This function generates a random palette that's a gradient
-// between four different colors.  The first is a dim hue, the second is 
-// a bright hue, the third is a bright pastel, and the last is 
-// another bright hue.  This gives some visual bright/dark variation
-// which is more interesting than just a gradient of different hues.
-void SetupRandomPalette(CRGBPalette16 palette)
-{
-  palette = CRGBPalette16( 
-                      CHSV( random8(), 255, 32), 
-                      CHSV( random8(), 255, 255), 
-                      CHSV( random8(), 128, 255), 
-                      CHSV( random8(), 255, 255)); 
-}
-
-// This function sets up a palette of black and white stripes,
-// using code.  Since the palette is effectively an array of
-// sixteen CRGB colors, the various fill_* functions can be used
-// to set them up.
-void SetupBlackAndWhiteStripedPalette(CRGBPalette16 palette)
-{
-  // 'black out' all 16 palette entries...
-  fill_solid(palette, 16, CRGB::Black);
-  // and set every fourth one to white.
-  palette[0] = CRGB::White;
-  palette[4] = CRGB::White;
-  palette[8] = CRGB::White;
-  palette[12] = CRGB::White;
-}
-
-// This function sets up a palette of purple and green stripes.
-void SetupPurpleAndGreenPalette(CRGBPalette16 palette)
-{
-  CRGB purple = CHSV( HUE_PURPLE, 255, 255);
-  CRGB green  = CHSV( HUE_GREEN, 255, 255);
-  CRGB black  = CRGB::Black;
-  
-  palette = CRGBPalette16( 
-    green,  green,  black,  black,
-    purple, purple, black,  black,
-    green,  green,  black,  black,
-    purple, purple, black,  black );
-}
 
 #endif
 

@@ -34,11 +34,11 @@ class FireEffect : public Effect {
             }
             
             // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-            if (controls.volume > controls.optionPot) {
+            if (controls.volume > controls.optionPot && controls.volume - controls.optionPot > random8()) {
                 int y = random8(5);
                 heats[columnIdx][y] = qadd8(heats[columnIdx][y], random8(160, 255));
             }
-      
+            
             // Step 4.  Map from heat cells to LED colors
             for (int j = 0; j < HEIGHT; j++) {
                 // Scale the heat value from 0-255 down to 0-240

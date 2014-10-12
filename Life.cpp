@@ -34,7 +34,7 @@ public:
             return;
         }
         
-        if (normalisedMicVal(controls.rawMic, controls.rawPot) > 128) {      
+        if (controls.volume > controls.optionPot) {      
             seed(96);
         }
 

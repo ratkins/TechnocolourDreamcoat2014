@@ -18,40 +18,192 @@ class Perlin : public Effect {
     
     uint8_t noise[MAX_DIMENSION][MAX_DIMENSION];
   
+    CRGBPalette16 currentPalette;
+    uint8_t colorLoop;  
+    uint8_t paletteIndex;
+    uint8_t paletteCount;
+    
   public:
-    Perlin(CRGB *leds) : Effect(leds, "Perlin"), hue(0), speed(16), scale(30) {
+    Perlin(CRGB *leds) : Effect(leds, "Perlin"), hue(0), speed(16), scale(30), currentPalette(PartyColors_p), colorLoop(1), paletteIndex(0), paletteCount(12) {
         x = random16();
         y = random16();
         z = random16();
     }
     
     virtual void draw(EffectControls controls) {
-        fillnoise8();
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                // We use the value at the (i,j) coordinate in the noise
-                // array for our brightness, and the flipped value from (j,i)
-                // for our pixel's hue.
-//                pixel(i, j) = CHSV(noise[j][i], 255, noise[i][j]);
-  
-                // You can also explore other ways to constrain the hue used, like below
-                pixel(i, j) = CHSV(hue + (noise[j][i]>>2), 255, noise[i][j]);
-            }
+        if (controls.optionButton) {
+            ChangePalette();
         }
-        hue++;
+        fillnoise8();
+        mapNoiseToLEDsUsingPalette();
     }
     
     void fillnoise8() {
+        // If we're runing at a low "speed", some 8-bit artifacts become visible
+        // from frame-to-frame.  In order to reduce this, we can do some fast data-smoothing.
+        // The amount of data smoothing we're doing depends on "speed".
+        uint8_t dataSmoothing = 0;
+        if (speed < 50) {
+            dataSmoothing = 200 - (speed * 4);
+        }
+      
         for (int i = 0; i < MAX_DIMENSION; i++) {
             int ioffset = scale * i;
             for (int j = 0; j < MAX_DIMENSION; j++) {
                 int joffset = scale * j;
-                noise[i][j] = inoise8(x + ioffset, y + joffset, z);
+                
+                byte data = inoise8(x + ioffset, y + joffset, z);
+          
+                // The range of the inoise8 function is roughly 16-240.
+                // These two operations expand those values out to roughly 0..255
+                // You can comment them out if you want the raw noise data.
+                data = qsub8(data, 16);
+                data = qadd8(data, scale8(data, 39));
+          
+                if (dataSmoothing) {
+                    uint8_t olddata = noise[i][j];
+                    uint8_t newdata = scale8(olddata, dataSmoothing) + scale8(data, 256 - dataSmoothing);
+                    data = newdata;
+                }
+                
+                noise[i][j] = data;
             }
         }
+        
         z += speed;
+        
+        // apply slow drift to X and Y, just for visual variation.
+        x += speed / 8;
+        y -= speed / 16;
     }
+    
+    void mapNoiseToLEDsUsingPalette() {
+        static uint8_t ihue = 0;
+        
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+              // We use the value at the (i,j) coordinate in the noise
+              // array for our brightness, and the flipped value from (j,i)
+              // for our pixel's index into the color palette.
+        
+              uint8_t index = noise[j][i];
+              uint8_t bri =   noise[i][j];
+        
+              // if this palette is a 'loop', add a slowly-changing base value
+              if (colorLoop) { 
+                  index += ihue;
+              }
+        
+              // brighten up, as the color palette itself often contains the 
+              // light/dark dynamic range desired
+              if (bri > 127) {
+                  bri = 255;
+              } else {
+                  bri = dim8_raw(bri * 2);
+              }
+        
+              pixel(i, j) = ColorFromPalette(currentPalette, index, bri);
+            }
+        }
+        ihue += 1;
+    }
+    
+    void ChangePalette() {
+        switch (paletteIndex++ % paletteCount) {
+//            case 0: 
+//              currentPalette = RainbowColors_p; speed = 20; scale = 30; colorLoop = 1;
+//              break;
+//              
+//            case 1:
+//              SetupPurpleAndGreenPalette(); speed = 10; scale = 50; colorLoop = 1;
+//              break;
+//              
+//            case 2:
+//              SetupBlackAndWhiteStripedPalette(); speed = 20; scale = 30; colorLoop = 1;
+//              break;
+//              
+//            case 3:
+//              currentPalette = ForestColors_p; speed =  8; scale =120; colorLoop = 0;
+//              break;
+//              
+//            case 4:
+//              currentPalette = CloudColors_p; speed =  4; scale = 30; colorLoop = 0;
+//              break;
+//              
+//            case 5:
+//              currentPalette = LavaColors_p; speed =  8; scale = 50; colorLoop = 0;
+//              break;
+//              
+//            case 6:
+//              currentPalette = OceanColors_p; speed = 20; scale = 90; colorLoop = 0;
+//              break;
+//              
+//            case 7:
+//              currentPalette = PartyColors_p; speed = 20; scale = 30; colorLoop = 1;
+//              break;
+//              
+//            case 8:
+//              SetupRandomPalette(); speed = 20; scale = 20; colorLoop = 1;
+//              break;
+//              
+//            case 9:
+//              SetupRandomPalette(); speed = 50; scale = 50; colorLoop = 1;
+//              break;
+//              
+//            case 10:
+//              SetupRandomPalette(); speed = 90; scale = 90; colorLoop = 1;
+//              break;
+//              
+//            case 11:
+//              currentPalette = RainbowStripeColors_p; speed = 30; scale = 20; colorLoop = 1;
+//              break;
+        }
+    }
+
 };
+
+// This function generates a random palette that's a gradient
+// between four different colors.  The first is a dim hue, the second is 
+// a bright hue, the third is a bright pastel, and the last is 
+// another bright hue.  This gives some visual bright/dark variation
+// which is more interesting than just a gradient of different hues.
+void SetupRandomPalette(CRGBPalette16 palette)
+{
+  palette = CRGBPalette16( 
+                      CHSV( random8(), 255, 32), 
+                      CHSV( random8(), 255, 255), 
+                      CHSV( random8(), 128, 255), 
+                      CHSV( random8(), 255, 255)); 
+}
+
+// This function sets up a palette of black and white stripes,
+// using code.  Since the palette is effectively an array of
+// sixteen CRGB colors, the various fill_* functions can be used
+// to set them up.
+void SetupBlackAndWhiteStripedPalette(CRGBPalette16 palette)
+{
+  // 'black out' all 16 palette entries...
+  fill_solid(palette, 16, CRGB::Black);
+  // and set every fourth one to white.
+  palette[0] = CRGB::White;
+  palette[4] = CRGB::White;
+  palette[8] = CRGB::White;
+  palette[12] = CRGB::White;
+}
+
+// This function sets up a palette of purple and green stripes.
+void SetupPurpleAndGreenPalette(CRGBPalette16 palette)
+{
+  CRGB purple = CHSV( HUE_PURPLE, 255, 255);
+  CRGB green  = CHSV( HUE_GREEN, 255, 255);
+  CRGB black  = CRGB::Black;
+  
+  palette = CRGBPalette16( 
+    green,  green,  black,  black,
+    purple, purple, black,  black,
+    green,  green,  black,  black,
+    purple, purple, black,  black );
+}
 
 #endif
 

@@ -12,7 +12,7 @@ class Perlin : public Effect {
     uint8_t hue;
     uint16_t speed;
     uint16_t scale;
-    uint16_t volumeScale;
+    uint16_t funkyScale;
     uint16_t x;
     uint16_t y;
     uint16_t z;
@@ -27,13 +27,13 @@ class Perlin : public Effect {
   public:
     Perlin(CRGB *leds) : Effect(leds, "Perlin"), 
             hue(0), 
-            speed(16), 
+            speed(2), 
             scale(30), 
-            volumeScale(0), 
+            funkyScale(0), 
             currentPalette(PartyColors_p), 
             colorLoop(1), 
             paletteIndex(0), 
-            paletteCount(12) {
+            paletteCount(10) {
         x = random16();
         y = random16();
         z = random16();
@@ -43,15 +43,13 @@ class Perlin : public Effect {
         if (controls.optionButton) {
             ChangePalette();
         }
-//        if (controls.volume > controls.optionPot && volumeScale == 0) {
-//            Serial.print("Beat detected... ");
-//            volumeScale = 8;
-//        }
-//        if (volumeScale > 0) {
-//            volumeScale--;
-//        }
-        scale = controls.optionPot;
-        Serial.print("scale  = "); Serial.println(controls.optionPot);
+        if (controls.volume > controls.optionPot && funkyScale == 0) {
+            Serial.println("Beat detected... ");
+            funkyScale = 16;
+        }
+        if (funkyScale > 0) {
+            funkyScale--;
+        }
         
         fillnoise8();
         mapNoiseToLEDsUsingPalette();
@@ -62,14 +60,14 @@ class Perlin : public Effect {
         // from frame-to-frame.  In order to reduce this, we can do some fast data-smoothing.
         // The amount of data smoothing we're doing depends on "speed".
         uint8_t dataSmoothing = 0;
-        if (speed < 50) {
-            dataSmoothing = 200 - (speed * 4);
+        if (speed + funkyScale < 50) {
+            dataSmoothing = 200 - ((speed + funkyScale) * 4);
         }
       
         for (int i = 0; i < MAX_DIMENSION; i++) {
-            int ioffset = (scale + volumeScale) * i;
+            int ioffset = scale * i;
             for (int j = 0; j < MAX_DIMENSION; j++) {
-                int joffset = (scale + volumeScale) * j;
+                int joffset = scale * j;
                 
                 byte data = inoise8(x + ioffset, y + joffset, z);
           
@@ -89,11 +87,11 @@ class Perlin : public Effect {
             }
         }
         
-        z += speed;
+        z += (speed + funkyScale);
         
         // apply slow drift to X and Y, just for visual variation.
-        x += speed / 8;
-        y -= speed / 16;
+        x += (speed + funkyScale) / 8;
+        y -= (speed + funkyScale) / 16;
     }
     
     void mapNoiseToLEDsUsingPalette() {
@@ -130,7 +128,7 @@ class Perlin : public Effect {
     void ChangePalette() {
         switch (paletteIndex++ % paletteCount) {
             case 0: 
-              currentPalette = RainbowColors_p; speed = 20; scale = 30; colorLoop = 1;
+              currentPalette = RainbowColors_p; speed = 2; scale = 30; colorLoop = 1;
               break;
               
             case 1:
@@ -138,42 +136,34 @@ class Perlin : public Effect {
               break;
               
             case 2:
-              SetupBlackAndWhiteStripedPalette(); speed = 20; scale = 30; colorLoop = 1;
+              SetupBlackAndWhiteStripedPalette(); speed = 4; scale = 30; colorLoop = 1;
               break;
               
             case 3:
-              currentPalette = ForestColors_p; speed =  8; scale =120; colorLoop = 0;
-              break;
-              
-            case 4:
               currentPalette = CloudColors_p; speed =  4; scale = 30; colorLoop = 0;
               break;
               
-            case 5:
+            case 4:
               currentPalette = LavaColors_p; speed =  8; scale = 50; colorLoop = 0;
               break;
               
-            case 6:
-              currentPalette = OceanColors_p; speed = 20; scale = 90; colorLoop = 0;
-              break;
-              
-            case 7:
+            case 5:
               currentPalette = PartyColors_p; speed = 20; scale = 30; colorLoop = 1;
               break;
               
-            case 8:
+            case 6:
               SetupRandomPalette(); speed = 20; scale = 20; colorLoop = 1;
               break;
               
-            case 9:
+            case 7:
               SetupRandomPalette(); speed = 50; scale = 50; colorLoop = 1;
               break;
               
-            case 10:
+            case 8:
               SetupRandomPalette(); speed = 90; scale = 90; colorLoop = 1;
               break;
               
-            case 11:
+            case 9:
               currentPalette = RainbowStripeColors_p; speed = 30; scale = 20; colorLoop = 1;
               break;
         }

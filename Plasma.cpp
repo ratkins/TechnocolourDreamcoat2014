@@ -32,7 +32,8 @@ class Plasma : public Effect {
                 
                 pixel(x, y) = ColorFromPalette(palette, (v >> 8) + 127);
             }
-        }      
+        }
+        soundSaturation(controls);      
     }
     
     uint8_t sin8(uint16_t x) {

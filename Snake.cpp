@@ -75,6 +75,7 @@ class Snake : public Effect {
         for (uint8_t i = 0; i < SNAKE_LENGTH; i++) {
             pixel(pixels[i].x, pixels[i].y) = colours[i] %= (255 - i * (255 / SNAKE_LENGTH));
         }
+        soundSaturate(controls);
     }
 
 };

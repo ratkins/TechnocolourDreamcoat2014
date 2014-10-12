@@ -37,6 +37,7 @@ class Effect {
     CRGB *leds;
     char *_name;
     CRGB deadPixel;
+    uint8_t soundSaturationBrightness;
     
 //    int columnHeights[WIDTH] = {
 //        20, 20, 20, 20, 18, 18, 18, 14, 12, 
@@ -46,7 +47,7 @@ class Effect {
 //    };
     
   public:
-    Effect(CRGB *leds, char* name) : leds(leds), _name(name), deadPixel(CRGB::Black) {}
+    Effect(CRGB *leds, char* name) : leds(leds), _name(name), deadPixel(CRGB::Black), soundSaturationBrightness(0) {}
     
     char* name() {
         return _name;
@@ -184,6 +185,21 @@ class Effect {
                 }
             }
         }    
+    }
+    
+    void soundSaturate(EffectControls controls) {
+        if (controls.volume > controls.optionPot) {
+            Serial.println("Saturating...");
+            soundSaturationBrightness = 255;
+        }
+        if (soundSaturationBrightness > 0) {
+            for (int i = 0; i < NUM_LEDS; i++) {
+                if (leds[i]) {          
+                    nblend(leds[i], CRGB::White, soundSaturationBrightness);
+                }
+            }
+            soundSaturationBrightness = constrain(soundSaturationBrightness - 32, 0, 255);
+        }
     }
     
 };

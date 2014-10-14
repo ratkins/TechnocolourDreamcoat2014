@@ -19,6 +19,7 @@
 //#include "RandomPainter.cpp"
 //#include "FunkyLine.cpp"
 //#include "MiniClouds.cpp"
+#include "Starfield.cpp"
 
 #define DATA_PIN 1
 #define PROG_UP_PIN 2
@@ -61,11 +62,11 @@ Snake snake(leds);
 //
 //FunkyLine funkyLine(leds);
 //MiniClouds miniClouds(leds);
-
+Starfield starfield(leds);
 
 Effect* effects[] = {
     &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
-    &life, &fire,
+    &life, &fire, &starfield,
     NULL
 };
 

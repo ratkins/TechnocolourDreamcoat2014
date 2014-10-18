@@ -3,13 +3,13 @@
 
 #include "FastLED.h"
 
-//#define WIDTH 36
-//#define HEIGHT 20
-//#define NUM_LEDS 640 // 38.4A, motherfuckers
+#define WIDTH 36
+#define HEIGHT 20
+#define NUM_LEDS 640 // 38.4A, motherfuckers
 
-#define WIDTH 16
-#define HEIGHT 8
-#define NUM_LEDS 128 // 7.68A, motherfuckers
+//#define WIDTH 16
+//#define HEIGHT 8
+//#define NUM_LEDS 128 // 7.68A, motherfuckers
 
 #define SOUND_THRESHOLD 128
 
@@ -39,12 +39,12 @@ class Effect {
     CRGB deadPixel;
     uint8_t soundSaturationBrightness;
     
-//    int columnHeights[WIDTH] = {
-//        20, 20, 20, 20, 18, 18, 18, 14, 12, 
-//        12, 14, 20, 20, 20, 20, 18, 18, 18, 
-//        18, 18, 18, 20, 20, 20, 20, 14, 12, 
-//        12, 14, 18, 18, 18, 20, 20, 20, 20
-//    };
+    int columnHeights[WIDTH] = {
+        20, 20, 20, 20, 18, 18, 18, 14, 12, 
+        12, 14, 20, 20, 20, 20, 18, 18, 18, 
+        18, 18, 18, 20, 20, 20, 20, 14, 12, 
+        12, 14, 18, 18, 18, 20, 20, 20, 20
+    };
     
   public:
     Effect(CRGB *leds, char* name) : leds(leds), _name(name), deadPixel(CRGB::Black), soundSaturationBrightness(0) {}
@@ -55,46 +55,46 @@ class Effect {
 
     virtual void draw(EffectControls controls) = 0;
     
-//    bool visible(int16_t x, int16_t y) {
-//      return x >= 0 && y >= 0 && x < WIDTH && y < columnHeights[x];
-//    }
-//    
-//    int16_t maxY(int16_t x) {
-//        return columnHeights[x];
-//    }
-//    
-//    struct CRGB& pixel(int16_t x, int16_t y) {
-//        if (visible(x, y)) {
-//            uint16_t sum = 0;
-//            for (int i = 0; i < x; i++) {
-//              sum += columnHeights[i];
-//            }
-//            if (x & 0x01) {
-//                return leds[sum + columnHeights[x] - y - 1];
-//            } else {
-//                return leds[sum + y];
-//            }
-//        } else {
-//            return deadPixel;
-//        } 
-//    }
-
     bool visible(int16_t x, int16_t y) {
-      return x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT;
+      return x >= 0 && y >= 0 && x < WIDTH && y < columnHeights[x];
     }
-
+    
     int16_t maxY(int16_t x) {
-        return HEIGHT;
+        return columnHeights[x];
+    }
+    
+    struct CRGB& pixel(int16_t x, int16_t y) {
+        if (visible(x, y)) {
+            uint16_t sum = 0;
+            for (int i = 0; i < x; i++) {
+              sum += columnHeights[i];
+            }
+            if (x & 0x01) {
+                return leds[sum + columnHeights[x] - y - 1];
+            } else {
+                return leds[sum + y];
+            }
+        } else {
+            return deadPixel;
+        } 
     }
 
-    // Top Left origin
-    struct CRGB& pixel(int16_t x, int16_t y) {
-        if (y & 0x01) {
-            return leds[WIDTH * (HEIGHT - y - 1) + x];
-        } else {
-            return leds[WIDTH * (HEIGHT - y - 1) + WIDTH - x - 1];
-        }
-    }
+//    bool visible(int16_t x, int16_t y) {
+//      return x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT;
+//    }
+//
+//    int16_t maxY(int16_t x) {
+//        return HEIGHT;
+//    }
+//
+//    // Top Left origin
+//    struct CRGB& pixel(int16_t x, int16_t y) {
+//        if (y & 0x01) {
+//            return leds[WIDTH * (HEIGHT - y - 1) + x];
+//        } else {
+//            return leds[WIDTH * (HEIGHT - y - 1) + WIDTH - x - 1];
+//        }
+//    }
 
 // bottom left origin
 //    struct CRGB& pixel(int16_t x, int16_t y) {

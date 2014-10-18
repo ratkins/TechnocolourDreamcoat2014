@@ -65,7 +65,7 @@ Snake snake(leds);
 Starfield starfield(leds);
 
 Effect* effects[] = {
-    &layoutTest, &chaseTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
+    &chaseTest, &layoutTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
     &life, &fire, &starfield,
     NULL
 };
@@ -86,7 +86,7 @@ void setup() {
   pinMode(13, OUTPUT);
 
   set_max_power_indicator_LED(13);
-  set_max_power_in_milliwatts(80000);
+  set_max_power_in_milliwatts(20000);
   
   while (effects[effectIndex++] != NULL) {
       effectCount++;

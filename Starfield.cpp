@@ -4,14 +4,14 @@
 #include "FastLED.h"
 #include "Effect.cpp"
 
-#define MAX_STARS (WIDTH * HEIGHT / 10)
+#define MAX_STARS (WIDTH * HEIGHT / 15)
 
 struct Star {
     float x, y;
     uint8_t plane;
 };
 
-const uint8_t planes[] = {255, 192, 128};
+const uint8_t planes[] = {32, 92, 255};
 
 class Starfield : public Effect {
   
@@ -41,8 +41,11 @@ class Starfield : public Effect {
 
                 // and randomly change the y position
                 stars[i].y = random8(HEIGHT);
+                
+                // and the plane, fuck it :-)
+                stars[i].plane = random8(3);
             }
-            pixel(stars[i].x, stars[i].y) = CRGB(planes[stars[i].plane], planes[stars[i].plane], planes[stars[i].plane]);
+            pixel((uint8_t)stars[i].x, (uint8_t)stars[i].y) = CHSV(0, 0, planes[stars[i].plane]);
         }
     }
 

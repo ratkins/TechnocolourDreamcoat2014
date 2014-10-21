@@ -168,4 +168,3 @@ void readControls(EffectControls* controls) {
     controls->volume = map(analogRead(VOLUME_PIN), 475, 1023, 0, 255);
     controls->optionPot = map(analogRead(OPTION_POT_PIN), 0, 1023, 0, 255);        
 }
-

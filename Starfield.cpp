@@ -7,7 +7,8 @@
 #define MAX_STARS (WIDTH * HEIGHT / 15)
 
 struct Star {
-    float x, y;
+    uint16_t x;
+    uint8_t y;
     uint8_t plane;
 };
 
@@ -22,7 +23,7 @@ class Starfield : public Effect {
   public:
     Starfield(CRGB *leds) : Effect(leds, "Starfield"), frame(0) {
         for (int i = 0; i < MAX_STARS; i++) {
-            stars[i].x = random8(WIDTH);
+            stars[i].x = random16(WIDTH * 0xFF);
             stars[i].y = random8(HEIGHT);
             stars[i].plane = random8(3);
         }
@@ -30,22 +31,24 @@ class Starfield : public Effect {
     
     void draw(EffectControls controls) {
         for (int i = 0; i < MAX_STARS; i++) {
-            Serial.print("star["); Serial.print(i); Serial.print("] x/y = "); Serial.print(stars[i].x); Serial.print("/"); Serial.println(stars[i].y);
-            stars[i].x += (1 + (float)stars[i].plane) * 0.15;
+            stars[i].x += (1 + stars[i].plane) * 13;
             
             // Check if our star is off the right of the screen
-            if (stars[i].x > WIDTH) {
+            if (stars[i].x > (WIDTH * 0xFF)) {
               
                 // If so, put it back on the left
                 stars[i].x = 0;
 
                 // and randomly change the y position
-                stars[i].y = random8(HEIGHT);
+//                stars[i].y = random8(HEIGHT);
                 
                 // and the plane, fuck it :-)
-                stars[i].plane = random8(3);
+//                stars[i].plane = random8(3);
             }
-            pixel((uint8_t)stars[i].x, (uint8_t)stars[i].y) = CHSV(0, 0, planes[stars[i].plane]);
+            uint8_t actualPart = stars[i].x >> 8;
+            uint8_t fractionalPart = stars[i].x & 0xFF;
+            pixel(actualPart    , (uint8_t)stars[i].y) = CRGB(planes[stars[i].plane], planes[stars[i].plane], planes[stars[i].plane]) %= (0xFF - fractionalPart);
+            pixel(actualPart + 1, (uint8_t)stars[i].y) = CRGB(planes[stars[i].plane], planes[stars[i].plane], planes[stars[i].plane]) %= fractionalPart;
         }
     }
 

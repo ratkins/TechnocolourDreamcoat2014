@@ -23,3 +23,4 @@ class PowerTest : public Effect {
 
 #endif
 
+

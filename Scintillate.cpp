@@ -45,3 +45,4 @@ class Scintillate : public Effect {
 
 #endif
 
+

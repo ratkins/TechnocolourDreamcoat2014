@@ -48,3 +48,4 @@ class Plasma : public Effect {
 
 #endif
 
+

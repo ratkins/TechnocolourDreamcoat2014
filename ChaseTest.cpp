@@ -20,3 +20,4 @@ class ChaseTest : public Effect {
 
 #endif
 
+

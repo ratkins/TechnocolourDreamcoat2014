@@ -18,11 +18,10 @@ class FunkyClouds : public Effect {
       private:
       
       public:      
-          
           int timers;
           timer *multiTimer;
     
-          FunkyClouds(CRGB *leds, char *name, timer multiTimer[], int timers) : Effect(leds, name), multiTimer(multiTimer), timers(timers) {}
+          FunkyClouds(CRGB *leds, char const *name, timer multiTimer[], int timers) : Effect(leds, name), timers(timers), multiTimer(multiTimer) {}
       
           // counts everything with different speeds linear up and down
           // = oscillators following a triangular function

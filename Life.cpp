@@ -1,8 +1,8 @@
 #ifndef Life_h
 #define Life_h
 
-#import "Effect.cpp"
-#import "FastLED.h"
+#include "Effect.cpp"
+#include "FastLED.h"
 
 #define DENSITY 80
 

@@ -12,8 +12,8 @@ class AdvancingPaletteEffect : public Effect {
   
   public:
     AdvancingPaletteEffect(CRGB *leds, char *name, CRGBPalette16 palette) : Effect(leds, name), 
-      palette(palette), 
-      colourIndex(0) {}
+      colourIndex(0),
+      palette(palette) {}
     
     virtual void draw(EffectControls controls) {
       for (int i = 0; i < HEIGHT; i++) {     

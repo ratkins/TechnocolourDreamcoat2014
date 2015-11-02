@@ -35,7 +35,7 @@ class Effect {
   
   protected:
     CRGB *leds;
-    char *_name;
+    char const *_name;
     CRGB deadPixel;
     uint8_t soundSaturationBrightness;
     
@@ -47,9 +47,9 @@ class Effect {
     };
     
   public:
-    Effect(CRGB *leds, char* name) : leds(leds), _name(name), deadPixel(CRGB::Black), soundSaturationBrightness(0) {}
+    Effect(CRGB *leds, char const *name) : leds(leds), _name(name), deadPixel(CRGB::Black), soundSaturationBrightness(0) {}
     
-    char* name() {
+    char const* name() {
         return _name;
     }
 

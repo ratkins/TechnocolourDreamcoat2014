@@ -10,7 +10,7 @@ class PlainColour : public Effect {
     CRGB colour;
   
   public:
-    PlainColour(CRGB *leds, char *name, CRGB colour) : Effect(leds, name), colour(colour) {}
+    PlainColour(CRGB *leds, char const *name, CRGB colour) : Effect(leds, name), colour(colour) {}
     
     virtual void draw(EffectControls controls) {
       for (int i = 0; i < NUM_LEDS; i++) {

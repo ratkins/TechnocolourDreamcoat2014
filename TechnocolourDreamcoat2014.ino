@@ -1,4 +1,5 @@
 #include <FastLED.h>
+#include <FHT.h>
 
 #include "Effect.cpp"
 
@@ -21,7 +22,7 @@
 //#include "MiniClouds.cpp"
 #include "Starfield.cpp"
 
-#define DATA_PIN 1
+#define DATA_PIN 4
 #define PROG_UP_PIN 2
 #define PROG_DOWN_PIN 3
 #define OPTION_BUTTON_PIN 7
@@ -43,8 +44,8 @@ PlainColour plainColourGreen(leds, "Power Test (Green)", CRGB::Green);
 PlainColour plainColourBlue(leds, "Power Test (Blue)", CRGB::Blue);
 PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 
-//AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p); 
-//AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p); 
+//AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p);
+//AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p);
 //AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
 
 FireEffect fire(leds, HeatColors_p);
@@ -65,9 +66,9 @@ Snake snake(leds);
 Starfield starfield(leds);
 
 Effect* effects[] = {
-    &chaseTest, &layoutTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
-    &life, &fire, &starfield,
-    NULL
+  &chaseTest, &layoutTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
+  &life, &fire, &starfield,
+  NULL
 };
 
 EffectControls controls;
@@ -76,95 +77,86 @@ uint8_t effectIndex = 0;
 uint8_t effectCount = 0;
 
 void setup() {
-  Serial.begin(115200);
- 
+//  Serial.begin(115200);
+
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  
+  FastLED.setCorrection(TypicalLEDStrip);
+  FastLED.setMaxRefreshRate(30);
+  set_max_power_indicator_LED(13);
+  set_max_power_in_volts_and_milliamps(5, 4000);
+
   pinMode(PROG_UP_PIN, INPUT_PULLUP);
   pinMode(PROG_DOWN_PIN, INPUT_PULLUP);
   pinMode(OPTION_BUTTON_PIN, INPUT_PULLUP);
   pinMode(13, OUTPUT);
 
-  set_max_power_indicator_LED(13);
-  set_max_power_in_milliwatts(20000);
-  
   while (effects[effectIndex++] != NULL) {
-      effectCount++;
+    effectCount++;
   }
   effectIndex = 0;
 
-  delay(2000);  
+  delay(2000);
 }
 
 void loop() {
-    unsigned long loopStartMillis = millis();
-//    Serial.print("loopStartMillis = "); Serial.println(loopStartMillis);
-//    Serial.print("effectCount = "); Serial.println(effectCount);
-
-    readControls(&controls);
-//    Serial.print("controls.progUp = "); Serial.print(controls.progUp); 
-//      Serial.print(", controls.progDown = "); Serial.print(controls.progDown); 
-//      Serial.print(", controls.optionButton = "); Serial.print(controls.optionButton); 
+  readControls(&controls);
+//    Serial.print("controls.progUp = "); Serial.print(controls.progUp);
+//      Serial.print(", controls.progDown = "); Serial.print(controls.progDown);
+//      Serial.print(", controls.optionButton = "); Serial.print(controls.optionButton);
 //      Serial.print(", controls.brightness = "); Serial.print(controls.brightness);
-//      Serial.print(", controls.optionPot = "); Serial.print(controls.optionPot);      
+//      Serial.print(", controls.optionPot = "); Serial.print(controls.optionPot);
 //      Serial.print(", controls.volume = "); Serial.println(controls.volume);
-      
-    if (controls.progUp && controls.progDown) {
-        // special mode?
-    } else if (controls.progUp) {
-        effectIndex = effectIndex == effectCount - 1 ? 0 : effectIndex + 1;
-    } else if (controls.progDown) {
-        effectIndex = effectIndex == 0 ? effectCount - 1 : effectIndex - 1;
-    }
-//    Serial.print("effectIndex: "); Serial.println(effectIndex);    
-    Effect *effect = effects[effectIndex];
-    
-    FastLED.setBrightness(controls.brightness);
-    
-//    Serial.print("effect.name(): "); Serial.println(effect->name());
-    
-    effect->draw(controls);
 
-    LEDS.show();
-//    show_at_max_brightness_for_power();
-    
-    unsigned long loopStartDelta = millis() - loopStartMillis;
-    if (loopStartDelta < 1000 / FRAMES_PER_SECOND) {
-        LEDS.delay(1000 / FRAMES_PER_SECOND - loopStartDelta);
-//        delay_at_max_brightness_for_power(1000 / FRAMES_PER_SECOND - loopStartDelta);
-    }  
-    memset8(leds, 0, NUM_LEDS * sizeof(CRGB));  
+  if (controls.progUp && controls.progDown) {
+    // special mode?
+  } else if (controls.progUp) {
+    effectIndex = effectIndex == effectCount - 1 ? 0 : effectIndex + 1;
+  } else if (controls.progDown) {
+    effectIndex = effectIndex == 0 ? effectCount - 1 : effectIndex - 1;
+  }
+
+  Effect *effect = effects[effectIndex];
+//    Serial.print("effectIndex: "); Serial.print(effectIndex);
+//    Serial.print("effect.name(): "); Serial.println(effect->name());
+
+  FastLED.setBrightness(controls.brightness);
+  
+  effect->draw(controls);
+
+  show_at_max_brightness_for_power();
+
+  FastLED.clearData();
 }
 
 void readControls(EffectControls* controls) {
-    if (controls->progUpDebounce == 0 && digitalRead(PROG_UP_PIN) == LOW) {
-        Serial.println("progUpDebounce");
-        controls->progUpDebounce = DEBOUNCE_COUNT;      
-        controls->progUp = true;
-    } else if (controls->progUpDebounce > 0) {
-        controls->progUpDebounce--;
-        controls->progUp = false;
-    }
-    
-    if (controls->progDownDebounce == 0 && digitalRead(PROG_DOWN_PIN) == LOW) {
-        Serial.println("progDownDebounce");      
-        controls->progDownDebounce = DEBOUNCE_COUNT;
-        controls->progDown = true;
-    } else if (controls->progDownDebounce > 0) {
-        controls->progDownDebounce--;
-        controls->progDown = false;        
-    }
+  if (controls->progUpDebounce == 0 && digitalRead(PROG_UP_PIN) == LOW) {
+    Serial.println("progUpDebounce");
+    controls->progUpDebounce = DEBOUNCE_COUNT;
+    controls->progUp = true;
+  } else if (controls->progUpDebounce > 0) {
+    controls->progUpDebounce--;
+    controls->progUp = false;
+  }
 
-    if (controls->optionButtonDebounce == 0 && digitalRead(OPTION_BUTTON_PIN) == LOW) {
-        Serial.println("optionButtonDebounce");      
-        controls->optionButtonDebounce = DEBOUNCE_COUNT;
-        controls->optionButton = true;
-    } else if (controls->optionButtonDebounce > 0) {
-        controls->optionButtonDebounce--;
-        controls->optionButton = false;        
-    }
-    
-    controls->brightness =  map(analogRead(BRIGHTNESS_PIN), 0, 1023, 0, 255);
-    controls->volume = map(analogRead(VOLUME_PIN), 475, 1023, 0, 255);
-    controls->optionPot = map(analogRead(OPTION_POT_PIN), 0, 1023, 0, 255);        
+  if (controls->progDownDebounce == 0 && digitalRead(PROG_DOWN_PIN) == LOW) {
+    Serial.println("progDownDebounce");
+    controls->progDownDebounce = DEBOUNCE_COUNT;
+    controls->progDown = true;
+  } else if (controls->progDownDebounce > 0) {
+    controls->progDownDebounce--;
+    controls->progDown = false;
+  }
+
+  if (controls->optionButtonDebounce == 0 && digitalRead(OPTION_BUTTON_PIN) == LOW) {
+    Serial.println("optionButtonDebounce");
+    controls->optionButtonDebounce = DEBOUNCE_COUNT;
+    controls->optionButton = true;
+  } else if (controls->optionButtonDebounce > 0) {
+    controls->optionButtonDebounce--;
+    controls->optionButton = false;
+  }
+
+  controls->brightness =  map(analogRead(BRIGHTNESS_PIN), 0, 1023, 0, 255);
+  controls->volume = map(analogRead(VOLUME_PIN), 475, 1023, 0, 255);
+  controls->optionPot = map(analogRead(OPTION_POT_PIN), 0, 1023, 0, 255);
 }

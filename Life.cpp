@@ -38,14 +38,14 @@ public:
             seed(96);
         }
 
-      Serial.println("Current state:");
-      for (int x = 0; x < WIDTH; x++) {
-          for (int y = 0; y < HEIGHT; y++) {
-              Serial.print(" "); Serial.print((*currState)[x][y]);
-          }
-          Serial.println();
-      }
-      Serial.println();
+//      Serial.println("Current state:");
+//      for (int x = 0; x < WIDTH; x++) {
+//          for (int y = 0; y < HEIGHT; y++) {
+//              Serial.print(" "); Serial.print((*currState)[x][y]);
+//          }
+//          Serial.println();
+//      }
+//      Serial.println();
         
         // Update the nextState array with the next generation (skip 0, our sentinel value)
         if (++hue == 0) {

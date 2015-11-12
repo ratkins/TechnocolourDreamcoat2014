@@ -44,7 +44,7 @@ class Perlin : public Effect {
             ChangePalette();
         }
         if (controls.volume > controls.optionPot && funkyScale == 0) {
-            Serial.println("Beat detected... ");
+//            Serial.println("Beat detected... ");
             funkyScale = 16;
         }
         if (funkyScale > 0) {
@@ -215,5 +215,6 @@ class Perlin : public Effect {
 };
 
 #endif
+
 
 

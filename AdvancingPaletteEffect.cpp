@@ -27,3 +27,4 @@ class AdvancingPaletteEffect : public Effect {
 #endif
 
 
+

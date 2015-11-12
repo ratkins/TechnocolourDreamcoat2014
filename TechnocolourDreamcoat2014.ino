@@ -3,10 +3,10 @@
 
 #include "Effect.cpp"
 
-#include "LayoutTest.cpp"
+//#include "LayoutTest.cpp"
 #include "ChaseTest.cpp"
-#include "PowerTest.cpp"
-#include "PlainColour.cpp"
+//#include "PowerTest.cpp"
+//#include "PlainColour.cpp"
 //#include "AdvancingPaletteEffect.cpp"
 #include "FireEffect.cpp"
 #include "Life.cpp"
@@ -36,13 +36,13 @@
 
 CRGB leds[NUM_LEDS];
 
-LayoutTest layoutTest(leds);
+//LayoutTest layoutTest(leds);
 ChaseTest chaseTest(leds);
 
-PlainColour plainColourRed(leds, "Power Test (Red)", CRGB::Red);
-PlainColour plainColourGreen(leds, "Power Test (Green)", CRGB::Green);
-PlainColour plainColourBlue(leds, "Power Test (Blue)", CRGB::Blue);
-PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
+//PlainColour plainColourRed(leds, "Power Test (Red)", CRGB::Red);
+//PlainColour plainColourGreen(leds, "Power Test (Green)", CRGB::Green);
+//PlainColour plainColourBlue(leds, "Power Test (Blue)", CRGB::Blue);
+//PlainColour plainColourWhite(leds, "Power Test (White)", CRGB::White);
 
 //AdvancingPaletteEffect advancingPalette0(leds, HeatColors_p);
 //AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p);
@@ -66,8 +66,7 @@ Snake snake(leds);
 Starfield starfield(leds);
 
 Effect* effects[] = {
-  &chaseTest, &layoutTest, &plainColourRed, &plainColourGreen, &plainColourBlue, &plainColourWhite, &scintillate, &plasma, &perlin, &snake,
-  &life, &fire, &starfield,
+  &chaseTest, &scintillate, &plasma, &perlin, &snake, &life, &fire, &starfield,
   NULL
 };
 
@@ -80,8 +79,7 @@ void setup() {
 //  Serial.begin(115200);
 
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setCorrection(TypicalLEDStrip);
-  FastLED.setMaxRefreshRate(30);
+//  FastLED.setCorrection(TypicalLEDStrip);
   set_max_power_indicator_LED(13);
   set_max_power_in_volts_and_milliamps(5, 4000);
 
@@ -130,7 +128,7 @@ void loop() {
 
 void readControls(EffectControls* controls) {
   if (controls->progUpDebounce == 0 && digitalRead(PROG_UP_PIN) == LOW) {
-    Serial.println("progUpDebounce");
+//    Serial.println("progUpDebounce");
     controls->progUpDebounce = DEBOUNCE_COUNT;
     controls->progUp = true;
   } else if (controls->progUpDebounce > 0) {
@@ -139,7 +137,7 @@ void readControls(EffectControls* controls) {
   }
 
   if (controls->progDownDebounce == 0 && digitalRead(PROG_DOWN_PIN) == LOW) {
-    Serial.println("progDownDebounce");
+//    Serial.println("progDownDebounce");
     controls->progDownDebounce = DEBOUNCE_COUNT;
     controls->progDown = true;
   } else if (controls->progDownDebounce > 0) {
@@ -148,7 +146,7 @@ void readControls(EffectControls* controls) {
   }
 
   if (controls->optionButtonDebounce == 0 && digitalRead(OPTION_BUTTON_PIN) == LOW) {
-    Serial.println("optionButtonDebounce");
+//    Serial.println("optionButtonDebounce");
     controls->optionButtonDebounce = DEBOUNCE_COUNT;
     controls->optionButton = true;
   } else if (controls->optionButtonDebounce > 0) {
@@ -160,3 +158,4 @@ void readControls(EffectControls* controls) {
   controls->volume = map(analogRead(VOLUME_PIN), 475, 1023, 0, 255);
   controls->optionPot = map(analogRead(OPTION_POT_PIN), 0, 1023, 0, 255);
 }
+

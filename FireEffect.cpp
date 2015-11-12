@@ -12,9 +12,10 @@ class FireEffect : public Effect {
   private:
     CRGBPalette16 palette;
     uint8_t heats[WIDTH][HEIGHT];
+    uint8_t frame;
   
   public:
-    FireEffect(CRGB *leds, CRGBPalette16 palette) : Effect(leds, "Fire 2012"), palette(palette) {
+    FireEffect(CRGB *leds, CRGBPalette16 palette) : Effect(leds, "Fire 2012"), palette(palette), frame(0) {
     }
     
     virtual void draw(EffectControls controls) {
@@ -33,7 +34,7 @@ class FireEffect : public Effect {
             }
             
             // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-            if (controls.volume > controls.optionPot && controls.volume - controls.optionPot > random8()) {
+            if (controls.optionPot > random8()) {
                 int y = random8(5);
                 heats[columnIdx][y] = qadd8(heats[columnIdx][y], random8(160, 255));
             }

@@ -33,6 +33,16 @@
 #define FRAMES_PER_SECOND 60
 #define DEBOUNCE_COUNT 16
 
+DEFINE_GRADIENT_PALETTE(Pinkish_p) {
+   0, 236,  63, 128,
+  64,  96, 236,  36,
+  96, 128, 236,  80,
+ 220,  64,  18, 255,
+ 255, 236,  63, 128    
+};
+
+CRGBPalette256 pinkish = Pinkish_p;
+
 CRGB leds[NUM_LEDS];
 
 //LayoutTest layoutTest(leds);
@@ -47,9 +57,9 @@ ChaseTest chaseTest(leds);
 //AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p);
 //AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
 
-FireEffect fire(leds, HeatColors_p);
+FireEffect fire(leds, Pinkish_p);
 Life life(leds);
-Plasma plasma(leds);
+Plasma plasma(leds, Pinkish_p);
 Scintillate scintillate(leds);
 Perlin perlin(leds);
 Snake snake(leds);

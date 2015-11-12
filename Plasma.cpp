@@ -8,10 +8,10 @@ class Plasma : public Effect {
   
   private:
     uint16_t frame;
-    CRGBPalette16 palette;
+    CRGBPalette256 palette;
     
   public:
-    Plasma(CRGB *leds) : Effect(leds, "Plasma"), frame(0) {
+    Plasma(CRGB *leds, CRGBPalette256 palette) : Effect(leds, "Plasma"), frame(0), palette(palette) {
     }
     
     virtual void draw(EffectControls controls) {
@@ -19,7 +19,6 @@ class Plasma : public Effect {
 //            palette = plasmaPalettes[++paletteIdx % paletteCount];
 //            Serial.print("Set palette to "); Serial.print(paletteIdx % paletteCount);
 //        }
-        palette = RainbowColors_p;
         
         frame += 100;
         for (int x = 0; x < WIDTH; x++) {

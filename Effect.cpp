@@ -14,6 +14,7 @@
 #define SOUND_THRESHOLD 128
 
 struct EffectControls {
+  
     uint8_t brightness;
     uint8_t volume;
     uint8_t optionPot;
@@ -29,6 +30,9 @@ struct EffectControls {
     
     int rawMic;
     int rawPot;
+
+    static const uint8_t fftBinsCount = 16;
+    uint8_t fftBins[fftBinsCount];
 };
 
 class Effect {
@@ -116,7 +120,7 @@ class Effect {
     }
 
     void line(int8_t x1, int8_t y1, int8_t x2, int8_t y2) {
-        Serial.print("line("); Serial.print(x1); Serial.print(", ");Serial.print(y1); Serial.print(", "); Serial.print(x2); Serial.print(", ");Serial.print(y2); Serial.println(")");
+        //Serial.print("line("); Serial.print(x1); Serial.print(", ");Serial.print(y1); Serial.print(", "); Serial.print(x2); Serial.print(", ");Serial.print(y2); Serial.println(")");
         if ( (x1>=25 && x2>=25) || (y1>=25 && y2>=25) ) return;
         int8_t dx = abs(x2 -x1);
         int8_t dy = abs(y2 -y1);
@@ -189,7 +193,7 @@ class Effect {
     
     void soundSaturate(EffectControls controls) {
         if (controls.volume > controls.optionPot) {
-            Serial.println("Saturating...");
+            //Serial.println("Saturating...");
             soundSaturationBrightness = 255;
         }
         if (soundSaturationBrightness > 0) {
@@ -207,6 +211,5 @@ class Effect {
 
 
 #endif
-
 
 

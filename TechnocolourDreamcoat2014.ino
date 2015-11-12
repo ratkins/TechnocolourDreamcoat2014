@@ -1,5 +1,4 @@
 #include <FastLED.h>
-#include <FHT.h>
 
 #include "Effect.cpp"
 

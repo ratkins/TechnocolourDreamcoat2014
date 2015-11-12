@@ -4,7 +4,7 @@
 #include "Effect.cpp"
 #include "FastLED.h"
 
-#define DENSITY 80
+#define DENSITY 60
 
 class Life : public Effect {
     
@@ -21,21 +21,23 @@ private:
 
 public:
 
-    Life(CRGB *leds) : Effect(leds, "Life"), hue(0), frame(0) {
+    Life(CRGB *leds) : Effect(leds, "Life"), hue(1), frame(0) {
         currState = &array1;
         nextState = &array2;
         seed(DENSITY);
     }
 
     void draw(EffectControls controls) {
+      random16_add_entropy(controls.rawMic);
+      
         // Skip every second frame otherwise we go too fast
-        if (frame++ & 0x01) {
-            copyToLedsArray(currState);
-            return;
-        }
+//        if (frame++ & 0x01) {
+//            copyToLedsArray(currState);
+//            return;
+//        }
         
-        if (controls.volume > controls.optionPot) {      
-            seed(96);
+        if (frame++ == 1 || controls.optionButton) {      
+            seed(random8(DENSITY));
         }
 
 //      Serial.println("Current state:");
@@ -51,6 +53,7 @@ public:
         if (++hue == 0) {
             hue = 1;
         }
+
         
 //        Serial.print("Hue for this generation = "); Serial.println(hue);
         for (int x = 0; x < WIDTH; x++) {
@@ -187,7 +190,7 @@ public:
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 if (random8() < chance) {
-                    (*currState)[x][y] = CRGB(1, 255, 255);
+                    (*currState)[x][y] = hue;
                 }
             }
         }

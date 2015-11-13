@@ -30,9 +30,6 @@ struct EffectControls {
     
     int rawMic;
     int rawPot;
-
-    static const uint8_t fftBinsCount = 16;
-    uint8_t fftBins[fftBinsCount];
 };
 
 class Effect {

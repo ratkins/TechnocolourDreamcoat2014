@@ -28,3 +28,4 @@ class AdvancingPaletteEffect : public Effect {
 
 
 
+

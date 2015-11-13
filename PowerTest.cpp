@@ -25,3 +25,4 @@ class PowerTest : public Effect {
 
 
 
+

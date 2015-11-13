@@ -48,7 +48,8 @@ class Snake : public Effect {
             pixels[i] = pixels[i - 1];
         }
     }
-  
+
+
   public:
     Snake(CRGB *leds) : Effect(leds, "Snake"), initialHue(0) {}
     
@@ -75,7 +76,7 @@ class Snake : public Effect {
         for (uint8_t i = 0; i < SNAKE_LENGTH; i++) {
             pixel(pixels[i].x, pixels[i].y) = colours[i] %= (255 - i * (255 / SNAKE_LENGTH));
         }
-        soundSaturate(controls);
+        blur2d(leds, WIDTH, HEIGHT, 32);
     }
 
 };

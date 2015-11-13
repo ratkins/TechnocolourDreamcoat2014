@@ -24,3 +24,4 @@ class PlainColour : public Effect {
 
 
 
+

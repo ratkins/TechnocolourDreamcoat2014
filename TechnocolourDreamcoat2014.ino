@@ -57,7 +57,7 @@ ChaseTest chaseTest(leds);
 //AdvancingPaletteEffect advancingPalette1(leds, RainbowColors_p);
 //AdvancingPaletteEffect advancingPalette2(leds, PartyColors_p);
 
-FireEffect fire(leds, Pinkish_p);
+FireEffect fire(leds, CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua,  CRGB::White));
 Life life(leds);
 Plasma plasma(leds, Pinkish_p);
 Scintillate scintillate(leds);
@@ -166,5 +166,22 @@ void readControls(EffectControls* controls) {
   controls->brightness =  map(analogRead(BRIGHTNESS_PIN), 0, 1023, 0, 255);
   controls->volume = map(analogRead(VOLUME_PIN), 475, 1023, 0, 255);
   controls->optionPot = map(analogRead(OPTION_POT_PIN), 0, 1023, 0, 255);
+}
+
+constexpr int Effect::columnHeights[WIDTH];
+uint16_t XY(uint8_t x, uint8_t y) {
+  if (Effect::visible(x, y)) {
+    uint16_t sum = 0;
+    for (int i = 0; i < x; i++) {
+      sum += Effect::columnHeights[i];
+    }
+    if (x & 0x01) {
+      return sum + Effect::columnHeights[x] - y - 1;
+    } else {
+      return sum + y;
+    }
+  } else {
+    return 0;
+  }  
 }
 

@@ -89,8 +89,9 @@ void setup() {
 
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
 //  FastLED.setCorrection(TypicalLEDStrip);
+
   set_max_power_indicator_LED(13);
-  set_max_power_in_volts_and_milliamps(5, 4000);
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, 4000);
 
   pinMode(PROG_UP_PIN, INPUT_PULLUP);
   pinMode(PROG_DOWN_PIN, INPUT_PULLUP);
@@ -130,7 +131,7 @@ void loop() {
   
   effect->draw(controls);
 
-  show_at_max_brightness_for_power();
+  FastLED.show();
 
   FastLED.clearData();
 }
@@ -169,6 +170,7 @@ void readControls(EffectControls* controls) {
 }
 
 constexpr int Effect::columnHeights[WIDTH];
+
 uint16_t XY(uint8_t x, uint8_t y) {
   if (Effect::visible(x, y)) {
     uint16_t sum = 0;
